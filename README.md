@@ -97,25 +97,6 @@ Paid tiers unlock Pro plugins, Studio features, and **Agent Mode** through a Str
 | **Pro** | $7 / month | Pro tier — declarative attributes, Pro plugins | [Subscribe — Pro plan](https://animotion.click/pricing) |
 | **Studio** | $15 / month | Studio tier + **Agent Mode (Agentic)** | [Subscribe — Studio plan](https://animotion.click/pricing) |
 
-**Direct Stripe checkout** (identical to the setup used on the Animotion site):
-
-```
-POST https://skills.animotion.click/api/stripe/checkout
-Content-Type: application/json
-
-{ "email": "you@example.com", "plan": "pro" }
-```
-
-Use `"plan": "studio"` for the Studio plan (includes Agent Mode). Stripe returns a hosted checkout URL (`https://checkout.stripe.com/pay/...`) and redirects you there.
-
-After a successful payment, retrieve your license key:
-
-```
-POST https://skills.animotion.click/api/stripe/retrieve-license
-Content-Type: application/json
-
-{ "sessionId": "cs_..." }
-```
 
 ## Documentation
 
