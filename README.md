@@ -390,3 +390,6 @@ Docs are also served over the CDN as markdown: `https://skills.animotion.click/c
 ## License
 
 [MIT](LICENSE)
+
+## For Information, help or suggestions
+reach out to info@animotion.click
