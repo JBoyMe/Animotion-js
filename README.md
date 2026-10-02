@@ -94,7 +94,7 @@ Paid tiers unlock Pro plugins, Studio features, and **Agent Mode** through a Str
 
 | Plan | Price | Unlocks | Stripe License |
 | --- | --- | --- | --- |
-| **Pro** | $7 / month | Pro tier — imperative API, declarative attributes, Pro plugins | [Subscribe — Pro plan](https://animotion.click/pricing) |
+| **Pro** | $7 / month | Pro tier — declarative attributes, Pro plugins | [Subscribe — Pro plan](https://animotion.click/pricing) |
 | **Studio** | $15 / month | Studio tier + **Agent Mode (Agentic)** | [Subscribe — Studio plan](https://animotion.click/pricing) |
 
 **Direct Stripe checkout** (identical to the setup used on the Animotion site):
@@ -123,8 +123,7 @@ Complete documentation included in this README:
 
 1. **Imperative API Reference** — the full JavaScript API (`Animotion.to`, timelines, ScrollTrigger, plugins, …)
 2. **Declarative Attributes Reference** — every `am-*` HTML attribute
-3. **Quick Reference Card** — endpoints, headers, and snippets at a glance
-4. **Skills Guide** — installing and using the Imperative, Declarative, and Agentic (Agent Mode) skills
+3. **Skills Guide** — installing and using the Imperative, Declarative, and Agentic (Agent Mode) skills
 
 ---
 
