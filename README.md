@@ -214,6 +214,8 @@ Options: `--tier <free|pro|studio|agentic>`, `--license-key <key>`, `--admin-ema
 
 **Supported agents (15):** `aider`, `amazonq`, `augment`, `claude`, `cline`, `codex`, `codium`, `cody`, `continue`, `copilot`, `cursor`, `jetbrains`, `opencode`, `roo`, `windsurf`
 
+Tier deep-dives: **[Agent Mode](docs/AGENTIC-MODE.md)** (`agentic`) · **[Studio tier](docs/STUDIO-GUIDE.md)** (`studio`) — both require the Studio plan.
+
 ### CDN endpoints
 
 Base URL: `https://skills.animotion.click` — all endpoints send `Access-Control-Allow-Origin: *`. Paid tiers require `?license=KEY` (or `X-License-Key` header / admin credentials).
@@ -380,6 +382,8 @@ Also exported: `animotionjs-plus/attrs` (attribute helpers) and `animotionjs-plu
 | [Declarative Attributes Reference](docs/DECLARATIVE-ATTRIBUTES.md) | Every `am-*` attribute, JSON rules, troubleshooting, complete reference |
 | [Imperative API Reference](docs/IMPERATIVE-API.md) | The full JavaScript API — init, tweens, timelines, scroll, text, 3D, plugins, React hooks |
 | [Skills Guide](docs/Skills-GUIDE.md) | Installing and using the Free/Pro/Studio/Agentic agent skills — CLI, CDN, no-code platforms, tier comparison |
+| [Agent Mode](docs/AGENTIC-MODE.md) | The `agentic` tier — generating complete animated pages from natural language prompts (Studio plan) |
+| [Studio Tier Guide](docs/STUDIO-GUIDE.md) | The `studio` tier — AI videos, framework templates and cinematic prompts (Studio plan) |
 
 Docs are also served over the CDN as markdown: `https://skills.animotion.click/cdn/docs/IMPERATIVE-API`
 
