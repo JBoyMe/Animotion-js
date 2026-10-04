@@ -11,16 +11,18 @@
 
 The Agentic skill is a **library-first** way to build animated pages with
 AnimotionJS: before writing any code, the agent fetches the Animotion library
-index, routes to one of five build modes, and materializes a real **layer** —
-a finished template, section, 3D scene, background or gradient — instead of
+index, routes to one of six build modes, and materializes a real **layer** —
+a finished template, section, 3D scene, background, gradient, or a
+plug-and-play **AI prompt kit** for media and UI components — instead of
 inventing generic code.
 
 ## The flow
 
 ```
-load library (GET /cdn/library, read animotion.json) → present the 5 modes →
-route → soft brief → commit ONE Style → materialize template or section →
-adapt copy & palette → port if needed → write animotion.json → offer the next layer
+load library (GET /cdn/library, read animotion.json) → present the 6 modes →
+route → soft brief → commit ONE Style → materialize template, section or
+prompt kit → fill slots / adapt copy & palette → recreate the interaction in
+AnimotionJS → port if needed → write animotion.json → offer the next layer
 ```
 
 | Mode | You say | Agent does |
@@ -30,12 +32,15 @@ adapt copy & palette → port if needed → write animotion.json → offer the n
 | 3. Design a 3D scene / hero backdrop | "particles behind the hero" | Search `scenes`, pick plugins by mood, tune params |
 | 4. Add a background or gradient | "something subtle behind the copy" | Search `backgrounds` + `gradients`, lower contrast than feels right |
 | 5. Add motion to an existing project | "animate our dashboard", "make a magnetic button", "recreate the scroll effect from stripe.com" | Read the code first — then pull layers, or author the described/recreated interaction directly from the API reference |
+| 6. Generate media or a UI component from an AI Prompt kit | "generate a hero image in our style", "a video loop for the showcase", "build this Figma card with hover states" | Search `ai-prompts`, fill the kit's slots with their asset, UI design and style, hand over the generation prompt, then build it and recreate its interaction strictly with AnimotionJS |
 
 Hard rules baked into the skill: **AnimotionJS only for motion** (never GSAP,
 CSS `@keyframes`, jQuery), **never strict-filter the library** (ranked search,
 judged fit), **materialize instead of reinventing** (except bespoke interactions
 no layer covers — those are authored from the full API reference), one Style per
-site — always the *user's* — kept in `animotion.json`.
+site — always the *user's* — kept in `animotion.json`. An **AI Prompt kit
+always ships in pairs**: the generation prompt and the AnimotionJS recreation
+of what it describes are one deliverable.
 
 **Styling is 100% yours.** Layer style directions and skill defaults only fill
 gaps: state a palette, type pair, spacing or layout change in the prompt and it
@@ -51,10 +56,11 @@ contrast, reduced-motion support) and keeping sections coherent.
 | `scenes` | 3D / particle / shader backdrops on plugins | 4 |
 | `backgrounds` | Video and ambient backdrops behind content | 3 |
 | `gradients` | Pointer-reactive gradients, mesh fields, kinetic dividers | 3 |
+| `ai-prompts` | **AI Prompt** kits — plug-and-play prompts for image, video, 3D animation and UI code components, with slots to drop in your own asset, UI design and styles | 4 |
 
 **Free layers** (no key): `templates/cinematic-hero`, `sections/feature-stagger`,
-`scenes/particle-field`, `backgrounds/video-hero`, `gradients/pointer-gradient`.
-Every other layer needs the Studio license.
+`scenes/particle-field`, `backgrounds/video-hero`, `gradients/pointer-gradient`,
+plus every `ai-prompts` kit. Every other layer needs the Studio license.
 
 ```bash
 # Index — kinds, layer metadata, plugin catalog, docs, usage (no auth)
@@ -63,22 +69,30 @@ curl https://skills.animotion.click/cdn/library
 # Ranked search in the user's own language — never a tag whitelist
 curl "https://skills.animotion.click/cdn/library/sections?q=pricing+table"
 
+# AI Prompt kits — free, no key needed
+curl "https://skills.animotion.click/cdn/library/ai-prompts?q=video+hero"
+
 # Materialize one layer — full prompt + animation spec
 curl "https://skills.animotion.click/cdn/library/templates/saas-landing?license=YOUR_KEY"
 ```
 
 Every layer file carries: when to use it, structure spec, the exact Animotion
 calls (timings, eases, timeline positions), style direction, accessibility and
-performance rules, plus porting notes.
+performance rules, plus porting notes. An `ai-prompts` kit additionally carries
+its plug-and-play slots and a **Prompt (copy-paste)** block: fill the slots
+with the user's asset, UI design and style, hand the prompt over, then recreate
+the behaviour it describes with AnimotionJS — imperative API or `am-*`
+attributes, nothing else.
 
 ## What's inside the skill
 
-- **The library-first flow** — Step 0 fetch, the five modes, non-negotiables, session shape
+- **The library-first flow** — Step 0 fetch, the six modes, non-negotiables, session shape
 - **Complete AnimotionJS reference** — a surface map of all 50 API sections (foundations, scroll, pointer input, text, media, Lottie/Rive, state machines, shaders/Three.js, principles) plus tweens, timelines, ScrollTrigger, springs, stagger, paths, eases, variants, declarative `am-*` attributes, plugins, framework bootstraps, performance and accessibility
-- **The layer library** — 21 layers served from `GET /cdn/library`, with search and licensing
+- **The layer library** — 25 layers served from `GET /cdn/library`, with search and licensing
+- **AI Prompt kits** — the `ai-prompts` kind: image, video, 3D animation and UI component prompts with plug-and-play slots, each with the AnimotionJS spec that recreates its behaviour
 - **Bespoke interactions** — describe the interaction or recreate one from another website, then build it in your project from the complete API reference
 - **Oil Motion** — point the agent at your video section (already set up with `am-video-oil-motion`), say which part of the video and what interaction you want — it generates the attributes, timeline or agent config for you
-- **Commands** — `/command   type`: `/help`, `/modes`, `/layers`, `/search`, `/layer`, `/add`, `/plugins`, `/plugin`, `/oil`, `/animate`, `/recreate`, `/init`, `/style`, `/state`, `/next`, `/docs`, `/key`
+- **Commands** — `/command   type`: `/help`, `/modes`, `/layers`, `/search`, `/layer`, `/prompt`, `/add`, `/plugins`, `/plugin`, `/oil`, `/animate`, `/recreate`, `/init`, `/style`, `/state`, `/next`, `/docs`, `/key`
 - **Project state** — `animotion.json` keeps the committed Style and build order
 
 The underlying references: [Imperative API](IMPERATIVE-API.md) and
@@ -118,6 +132,7 @@ Activate the skill with `/animotion-agentic` (on both tier names):
 /animotion-agentic Add a pricing section to our existing page
 /animotion-agentic Put a particle field behind the hero
 /animotion-agentic Animate this dashboard — reading the code first
+/animotion-agentic Generate a hero image in our brand style and build the section around it
 ```
 
 The agent's license key is found in order: `ANIMOTION_LICENSE_KEY` env var →
@@ -132,10 +147,11 @@ Commands are case-insensitive and also work without the leading `/`.
 | Command | Type (argument) | Does |
 |---|---|---|
 | `/help` | — | Print the command table |
-| `/modes` | — | Show the five build modes and route your request to one |
-| `/layers` | `[kind]` or `search words` | **List every layer** — all five kinds with counts, each layer as `id — name (tier) — description`. Narrow it: `/layers   sections`, `/layers   pricing table` |
+| `/modes` | — | Show the six build modes and route your request to one |
+| `/layers` | `[kind]` or `search words` | **List every layer** — all six kinds with counts, each layer as `id — name (tier) — description`. Narrow it: `/layers   sections`, `/layers   pricing table` |
 | `/search` | `<words>` | Ranked search in your own words (alias of `/layers   <words>`) |
 | `/layer` | `<kind/id>` | Summarize one layer (`/layer   sections/pricing-cards`) and offer to build it |
+| `/prompt` | `<kit id or media>` | One **AI Prompt** kit (`/prompt   image-hero-kit`, or `image`, `video`, `3d`, `ui`): its slots, the copy-paste prompt block, and an offer to fill the slots and build the section with its AnimotionJS animation |
 | `/add` | `<kind/id or words>` | Materialize that layer into your page/project |
 | `/plugins` | `[category]` | The 40-plugin catalog with tiers, grouped by category (`effects`, `physics`, `three`, `layout`, `scroll`, `text`, `debug`) |
 | `/plugin` | `<slug>` | One plugin (`/plugin   particles`): what it does, tier, and the exact registration snippet |
@@ -159,6 +175,7 @@ Commands are case-insensitive and also work without the leading `/`.
 | Visual direction | "dark theme, accent #ff6b6b", "minimal, professional" |
 | Full restyle | "layer style directions are just defaults — warm cream bg, serif display, 16px base" |
 | Recreate an effect | "rebuild the nav hover from linear.app on our header", "count-up stats like vercel.com" |
+| Generate media with a kit | "/prompt   video — scroll-scrubbed product loop in our style", "generate a 3D turntable of this model, our palette" |
 | Oil Motion | "#showcase has Oil Motion wired up — make the first three seconds scrub with the scroll" |
 
 Prompt anatomy: `[page type] + [sections] + [animations] + [framework] + [style] + [requirements]`

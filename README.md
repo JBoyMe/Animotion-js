@@ -11,7 +11,7 @@ Two usage tiers:
 
 - **Free** — the full imperative JavaScript API (`Animotion.to()`, timelines, scroll, springs, …)
 - **Pro ($7/mo)** — everything free, plus declarative `am-*` HTML attributes with zero JavaScript, Pro plugins, and Pro AI-agent skills
-- **Studio ($15/mo)** — everything in Pro, plus the library-first **Agentic skill** for AI coding agents (templates, sections, 3D scenes, backgrounds, gradients — the legacy `studio` tier is an alias of it)
+- **Studio ($15/mo)** — everything in Pro, plus the library-first **Agentic skill** for AI coding agents (templates, sections, 3D scenes, backgrounds, gradients, AI Prompt kits for image/video/3D/UI — the legacy `studio` tier is an alias of it)
 
 > **Note:** This repository publishes documentation and license information only. The engine source code is distributed through the [npm package](https://www.npmjs.com/package/animotionjs-plus).
 
@@ -187,7 +187,7 @@ Skills teach your AI coding agent (Cursor, Claude Code, Copilot, opencode, …) 
 |------|--------------|------|-------|
 | **free** | Imperative API skill | — | $0 |
 | **pro** | Declarative `am-*` attributes skill | Pro | $7/mo |
-| **agentic** | Library-first skill — templates, sections, scenes, backgrounds, gradients | Studio | $15/mo |
+| **agentic** | Library-first skill — templates, sections, scenes, backgrounds, gradients, AI Prompt kits | Studio | $15/mo |
 | **studio** | Deprecated alias of `agentic` — identical file | Studio | $15/mo |
 
 ### Install with the CLI (recommended)
@@ -224,7 +224,7 @@ Base URL: `https://skills.animotion.click` — all endpoints send `Access-Contro
 |----------|---------|
 | `GET /cdn/{tier}/{agent}` | Raw skill text (e.g. `/cdn/free/opencode`, `/cdn/pro/copilot`, `/cdn/agentic/copilot`) |
 | `GET /cdn/library` | Layer library index — kinds, layer metadata, plugin catalog, docs (no auth) |
-| `GET /cdn/library/{kind}?q=` | Browse/search one kind: `templates`, `sections`, `scenes`, `backgrounds`, `gradients` |
+| `GET /cdn/library/{kind}?q=` | Browse/search one kind: `templates`, `sections`, `scenes`, `backgrounds`, `gradients`, `ai-prompts` |
 | `GET /cdn/library/{kind}/{id}` | Full layer prompt + animation spec (free layers open, premium needs `?license=KEY`) |
 | `GET /cdn/agents` | JSON list of all agents |
 | `GET /cdn/docs/{doc}` | Full docs as markdown (`IMPERATIVE-API`, `DECLARATIVE-ATTRIBUTES`, `INSTALLATION-GUIDE`, `NO-CODE-GUIDE`, `QUICK-REFERENCE`) |
