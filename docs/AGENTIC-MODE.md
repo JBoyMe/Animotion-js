@@ -74,10 +74,11 @@ performance rules, plus porting notes.
 ## What's inside the skill
 
 - **The library-first flow** — Step 0 fetch, the five modes, non-negotiables, session shape
-- **Complete AnimotionJS reference** — tweens, timelines, ScrollTrigger, springs, stagger, paths, eases, variants, declarative `am-*` attributes, plugins, framework bootstraps, performance and accessibility
+- **Complete AnimotionJS reference** — a surface map of all 50 API sections (foundations, scroll, pointer input, text, media, Lottie/Rive, state machines, shaders/Three.js, principles) plus tweens, timelines, ScrollTrigger, springs, stagger, paths, eases, variants, declarative `am-*` attributes, plugins, framework bootstraps, performance and accessibility
 - **The layer library** — 21 layers served from `GET /cdn/library`, with search and licensing
 - **Bespoke interactions** — describe the interaction or recreate one from another website, then build it in your project from the complete API reference
-- **Commands** — `/command   type`: `/layers`, `/layer`, `/add`, `/animate`, `/recreate`, `/style`, `/state`, `/next`, `/help`
+- **Oil Motion** — point the agent at your video section (already set up with `am-video-oil-motion`), say which part of the video and what interaction you want — it generates the attributes, timeline or agent config for you
+- **Commands** — `/command   type`: `/help`, `/modes`, `/layers`, `/search`, `/layer`, `/add`, `/plugins`, `/plugin`, `/oil`, `/animate`, `/recreate`, `/init`, `/style`, `/state`, `/next`, `/docs`, `/key`
 - **Project state** — `animotion.json` keeps the committed Style and build order
 
 The underlying references: [Imperative API](IMPERATIVE-API.md) and
@@ -126,18 +127,27 @@ The agent's license key is found in order: `ANIMOTION_LICENSE_KEY` env var →
 
 Inside an active session, start your message with `/` — the first word is the
 command, everything after it is the `type` (argument). No argument means "all".
+Commands are case-insensitive and also work without the leading `/`.
 
 | Command | Type (argument) | Does |
 |---|---|---|
+| `/help` | — | Print the command table |
+| `/modes` | — | Show the five build modes and route your request to one |
 | `/layers` | `[kind]` or `search words` | **List every layer** — all five kinds with counts, each layer as `id — name (tier) — description`. Narrow it: `/layers   sections`, `/layers   pricing table` |
+| `/search` | `<words>` | Ranked search in your own words (alias of `/layers   <words>`) |
 | `/layer` | `<kind/id>` | Summarize one layer (`/layer   sections/pricing-cards`) and offer to build it |
 | `/add` | `<kind/id or words>` | Materialize that layer into your page/project |
+| `/plugins` | `[category]` | The 40-plugin catalog with tiers, grouped by category (`effects`, `physics`, `three`, `layout`, `scroll`, `text`, `debug`) |
+| `/plugin` | `<slug>` | One plugin (`/plugin   particles`): what it does, tier, and the exact registration snippet |
+| `/oil` | `<section selector and/or ask>` | Oil Motion: point at the video section you already set up (`/oil   #showcase`), say which part of the video and what interaction — the agent generates the config |
 | `/animate` | `<element or interaction>` | Describe the interaction — the agent builds it on your connected project |
 | `/recreate` | `<url or description>` | Recreate a website's effect and apply it to your project |
+| `/init` | `cdn`, `npm`, `react`, `vue`, `svelte`, or `astro` | The setup snippet for that stack — script/import, `init({ licenseKey })`, cleanup |
 | `/style` | `[tokens]` | Show your committed style, or change it: `/style   accent #ff6b6b, display Clash Display` |
 | `/state` | — | Show `animotion.json` — style, layers used, sections built |
 | `/next` | — | Suggest the next layer for what you're building |
-| `/help` | — | Print the command table |
+| `/docs` | `<topic>` | Fetch a reference: `imperative`, `declarative`, `quick`, `install`, `no-code`, `adding-layers` |
+| `/key` | — | Where the license key lives and how to add one |
 
 ### Writing good prompts
 
@@ -149,6 +159,7 @@ command, everything after it is the `type` (argument). No argument means "all".
 | Visual direction | "dark theme, accent #ff6b6b", "minimal, professional" |
 | Full restyle | "layer style directions are just defaults — warm cream bg, serif display, 16px base" |
 | Recreate an effect | "rebuild the nav hover from linear.app on our header", "count-up stats like vercel.com" |
+| Oil Motion | "#showcase has Oil Motion wired up — make the first three seconds scrub with the scroll" |
 
 Prompt anatomy: `[page type] + [sections] + [animations] + [framework] + [style] + [requirements]`
 
