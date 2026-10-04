@@ -12,8 +12,7 @@
 - [NPM Installation](#npm-installation)
 - [CDN Usage (Detailed)](#cdn-usage-detailed)
   - [Authentication Methods](#authentication-methods)
-  - [Free Tier Access](#free-tier-access)
-  - [Pro Tier Access](#pro-tier-access)
+  - [License Access](#license-access)
   - [Endpoint Reference](#endpoint-reference)
   - [Code Examples](#code-examples)
 - [No-Code Platform Integration](#no-code-platform-integration)
@@ -27,23 +26,21 @@
   - [Airtable](#airtable)
   - [Zapier / Make / n8n](#zapier--make--n8n)
 - [Agent-Specific Setup](#agent-specific-setup)
-- [Tier Comparison](#tier-comparison)
+- [API Styles](#api-styles)
 - [Troubleshooting](#troubleshooting)
 
 ---
 
 ## Overview
 
-AnimotionJS skills provide your AI coding agent with knowledge of the AnimotionJS animation library. Four tiers are available (Free and Pro are detailed below; the Agentic tier — `studio` is its deprecated alias — has its own [Agentic Tier Guide](AGENTIC-MODE.md)):
+AnimotionJS skills provide your AI coding agent with knowledge of the AnimotionJS animation library. One skill ships — the library-first **Agentic** skill (`studio` is its deprecated alias; see the [Agentic Tier Guide](AGENTIC-MODE.md)):
 
 | Tier | Price | Features | Authentication |
 |------|-------|----------|----------------|
-| **Free** | $0 | Imperative API (`to()`, `from()`, `spring()`, `timeline()`) | None required |
-| **Pro** | $7/month (Stripe) | Declarative HTML attributes (`am-*`), no JavaScript required | License key or Admin credentials |
-| **Agentic** | $15/month (Stripe) | Library-first skill: templates, sections, scenes, backgrounds, gradients from `GET /cdn/library` | License key or Admin credentials |
+| **Agentic** | $15/month (Stripe) | Library-first skill: templates, sections, scenes, backgrounds, gradients, AI Prompt kits from `GET /cdn/library` | License key or Admin credentials |
 | **Studio** | $15/month (Stripe) | Deprecated alias of Agentic — identical skill file | License key or Admin credentials |
 
-> **Pro Tier Subscription:** The $7/month license is processed via Stripe. Your license key is tied to your Stripe subscription. If you cancel your subscription, your license will be invalidated at the end of the billing period.
+> **Subscription:** The $15/month license is processed via Stripe. Your license key is tied to your Stripe subscription. If you cancel your subscription, your license will be invalidated at the end of the billing period.
 
 ### What's new in v1.3.1
 
@@ -79,11 +76,11 @@ AnimotionJS skills provide your AI coding agent with knowledge of the AnimotionJ
 
 ## How Subscription Works
 
-### Pro Tier ($7/month via Stripe)
+### Subscription ($15/month via Stripe)
 
 1. **Subscribe:** Visit https://skills.animotion.click/checkout and subscribe via Stripe
 2. **Receive License Key:** After payment, you'll receive a license key via email
-3. **Install Skill:** Use the license key when installing the pro tier
+3. **Install Skill:** Use the license key when installing the skill
 4. **Automatic Renewal:** Stripe automatically renews your subscription monthly
 5. **Validation:** The skill validates your license against the backend daily
 
@@ -169,11 +166,11 @@ npx animotion-skills install --all
 # Force reinstall (overwrite existing)
 npx animotion-skills install --all --force
 
-# Install Pro tier with license key
-npx animotion-skills install --tier=pro --license-key=YOUR_KEY
+# Install the skill with a license key
+npx animotion-skills install --tier=agentic --license-key=YOUR_KEY
 
-# Install Pro tier with admin credentials
-npx animotion-skills install --tier=pro --admin-email=you@email.com --admin-secret=SECRET
+# Install with admin credentials
+npx animotion-skills install --tier=agentic --admin-email=you@email.com --admin-secret=SECRET
 ```
 
 ### Short Command
@@ -181,7 +178,7 @@ npx animotion-skills install --tier=pro --admin-email=you@email.com --admin-secr
 ```bash
 # Using the short alias
 as install --agent=copilot
-as install --all --tier=pro --license-key=YOUR_KEY
+as install --all --tier=agentic --license-key=YOUR_KEY
 ```
 
 ---
@@ -200,7 +197,7 @@ https://skills.animotion.click
 
 ### Authentication Methods
 
-There are **3 ways** to authenticate for Pro tier access:
+There are **3 ways** to authenticate for skill access:
 
 #### Method 1: License Key (Recommended for Individual Users)
 
@@ -271,13 +268,13 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIs...
 
 ---
 
-### Free Tier Access
+### License Access
 
-Free tier requires **no authentication**. Simply make a request to the endpoint.
+Skill access requires an active Stripe subscription ($15/month).
 
 **Endpoint:**
 ```
-GET https://skills.animotion.click/cdn/free/{agent}
+GET https://skills.animotion.click/cdn/agentic/{agent}
 ```
 
 **Supported agent names:**
@@ -291,36 +288,6 @@ GET https://skills.animotion.click/cdn/free/{agent}
 - `aider` - Aider
 - `continue` - Continue
 
-**Examples:**
-
-```bash
-# Using curl
-curl https://skills.animotion.click/cdn/free/copilot
-
-# Using PowerShell
-Invoke-WebRequest -Uri "https://skills.animotion.click/cdn/free/claude"
-
-# Using JavaScript
-const response = await fetch('https://skills.animotion.click/cdn/free/opencode');
-const skill = await response.text();
-```
-
-**Response format:**
-- Content-Type: `text/markdown` (for most agents)
-- Content-Type: `application/json` (for Cursor)
-- Cache-Control: `public, max-age=86400` (24 hours)
-
----
-
-### Pro Tier Access
-
-Pro tier requires an active Stripe subscription ($7/month).
-
-**Endpoint:**
-```
-GET https://skills.animotion.click/cdn/pro/{agent}
-```
-
 **Important Notes:**
 - License key is tied to your Stripe subscription
 - Subscription renews automatically each month
@@ -332,29 +299,29 @@ GET https://skills.animotion.click/cdn/pro/{agent}
 #### Using License Key (Headers)
 ```bash
 curl -H "X-License-Key: am_abc123def456ghi789jkl012mno345" \
-     https://skills.animotion.click/cdn/pro/copilot
+     https://skills.animotion.click/cdn/agentic/copilot?license=YOUR_KEY
 ```
 
 #### Using License Key (Query Param)
 ```bash
-curl "https://skills.animotion.click/cdn/pro/copilot?license=am_abc123def456ghi789jkl012mno345"
+curl "https://skills.animotion.click/cdn/agentic/copilot?license=am_abc123def456ghi789jkl012mno345"
 ```
 
 #### Using Admin Credentials (Headers)
 ```bash
 curl -H "X-Admin-Email: admin@company.com" \
      -H "X-Admin-Secret: sec_9f8e7d6c5b4a3210" \
-     https://skills.animotion.click/cdn/pro/opencode
+     https://skills.animotion.click/cdn/agentic/opencode?license=YOUR_KEY
 ```
 
 #### Using Admin Credentials (Query Params)
 ```bash
-curl "https://skills.animotion.click/cdn/pro/opencode?adminEmail=admin@company.com&adminSecret=sec_9f8e7d6c5b4a3210"
+curl "https://skills.animotion.click/cdn/agentic/opencode?adminEmail=admin@company.com&adminSecret=sec_9f8e7d6c5b4a3210"
 ```
 
 #### Using JavaScript (Headers)
 ```javascript
-const response = await fetch('https://skills.animotion.click/cdn/pro/claude', {
+const response = await fetch('https://skills.animotion.click/cdn/agentic/claude?license=YOUR_KEY', {
   headers: {
     'X-License-Key': 'am_abc123def456ghi789jkl012mno345'
   }
@@ -365,14 +332,14 @@ const skill = await response.text();
 #### Using JavaScript (Query Params)
 ```javascript
 const licenseKey = 'am_abc123def456ghi789jkl012mno345';
-const response = await fetch(`https://skills.animotion.click/cdn/pro/claude?license=${licenseKey}`);
+const response = await fetch(`https://skills.animotion.click/cdn/agentic/claude?license=${licenseKey}`);
 const skill = await response.text();
 ```
 
 **Response format:**
 - Content-Type: `text/markdown` (for most agents)
 - Content-Type: `application/json` (for Cursor)
-- Cache-Control: `private, no-cache` (no caching for pro content)
+- Cache-Control: `private, no-cache` (no caching for skill content)
 - X-Auth: `session` or `license` (indicates auth method used)
 
 ---
@@ -381,8 +348,6 @@ const skill = await response.text();
 
 | Endpoint | Method | Description | Auth Required | Response Format |
 |----------|--------|-------------|---------------|-----------------|
-| `/cdn/free/{agent}` | GET | Free tier skill file | No | text/markdown or application/json |
-| `/cdn/pro/{agent}` | GET | Pro tier skill file | Yes | text/markdown or application/json |
 | `/cdn/agentic/{agent}` | GET | Agentic tier skill file (library-first) | Yes | text/markdown |
 | `/cdn/studio/{agent}` | GET | Alias of `agentic` — identical file | Yes | text/markdown |
 | `/cdn/library` | GET | Layer library index (kinds, layer metadata, plugins, docs) | No | application/json |
@@ -394,8 +359,8 @@ const skill = await response.text();
 | `/api/auth/session` | POST | Get session token | Yes | application/json |
 
 **Documentation files available:**
-- `IMPERATIVE-API` - Free tier API documentation
-- `DECLARATIVE-ATTRIBUTES` - Pro tier documentation
+- `IMPERATIVE-API` - Imperative API documentation
+- `DECLARATIVE-ATTRIBUTES` - Declarative attributes documentation
 
 > **Docs version:** `1.3.1` — `IMPERATIVE-API` now includes §49 *Oil Motion (Pro)*, **CustomEase SVG-path eases**, **MotionPath `align`/`alignOrigin`**, **PhysicsEngine mouse drag**, HTML-aware SplitText, and the ScrollTrigger auto-stagger API. `DECLARATIVE-ATTRIBUTES` now includes the full *Oil Motion* attribute section (`am-video-oil-*`, `am-oil-motion-*`) plus `am-motion-path-options` alignment and custom `am-ease` examples.
 
@@ -413,30 +378,22 @@ curl https://skills.animotion.click/cdn/docs/DECLARATIVE-ATTRIBUTES
 ```python
 import requests
 
-# Free tier
-response = requests.get('https://skills.animotion.click/cdn/free/copilot')
-skill = response.text
-
-# Pro tier with license key
 headers = {'X-License-Key': 'am_abc123def456ghi789jkl012mno345'}
-response = requests.get('https://skills.animotion.click/cdn/pro/copilot', headers=headers)
+response = requests.get('https://skills.animotion.click/cdn/agentic/copilot?license=YOUR_KEY', headers=headers)
 skill = response.text
 ```
 
 #### cURL with jq
 ```bash
 # Get skill and extract specific field
-curl -s "https://skills.animotion.click/cdn/free/opencode" | head -20
+curl -s -H "X-License-Key: am_abc123def456ghi789jkl012mno345" \
+  "https://skills.animotion.click/cdn/agentic/opencode?license=YOUR_KEY" | head -20
 ```
 
 #### PowerShell
 ```powershell
-# Free tier
-$skill = Invoke-WebRequest -Uri "https://skills.animotion.click/cdn/free/copilot"
-
-# Pro tier with license key
 $headers = @{ "X-License-Key" = "am_abc123def456ghi789jkl012mno345" }
-$skill = Invoke-WebRequest -Uri "https://skills.animotion.click/cdn/pro/copilot" -Headers $headers
+$skill = Invoke-WebRequest -Uri "https://skills.animotion.click/cdn/agentic/copilot?license=YOUR_KEY" -Headers $headers
 ```
 
 ---
@@ -453,7 +410,7 @@ $skill = Invoke-WebRequest -Uri "https://skills.animotion.click/cdn/pro/copilot"
 ```html
 <script>
 // Load AnimotionJS skill for Copilot
-fetch('https://skills.animotion.click/cdn/free/copilot')
+fetch('https://skills.animotion.click/cdn/agentic/copilot?license=YOUR_KEY')
   .then(r => r.text())
   .then(skill => {
     window.animotionSkill = skill;
@@ -470,7 +427,7 @@ fetch('https://skills.animotion.click/cdn/free/copilot')
 ```html
 <div id="animotion-skill" style="display:none;"></div>
 <script>
-fetch('https://skills.animotion.click/cdn/free/copilot')
+fetch('https://skills.animotion.click/cdn/agentic/copilot?license=YOUR_KEY')
   .then(r => r.text())
   .then(html => {
     document.getElementById('animotion-skill').innerHTML = html;
@@ -478,10 +435,10 @@ fetch('https://skills.animotion.click/cdn/free/copilot')
 </script>
 ```
 
-**For Pro tier:**
+**With a license key:**
 ```html
 <script>
-fetch('https://skills.animotion.click/cdn/pro/copilot?license=YOUR_KEY')
+fetch('https://skills.animotion.click/cdn/agentic/copilot?license=YOUR_KEY')
   .then(r => r.text())
   .then(skill => {
     window.animotionProSkill = skill;
@@ -503,7 +460,7 @@ fetch('https://skills.animotion.click/cdn/pro/copilot?license=YOUR_KEY')
 import wixFetch from 'wix-fetch';
 
 $w.onReady(function () {
-  wixFetch.fetch('https://skills.animotion.click/cdn/free/opencode')
+  wixFetch.fetch('https://skills.animotion.click/cdn/agentic/opencode?license=YOUR_KEY')
     .then(response => response.text())
     .then(skill => {
       console.log('Animotion skill loaded:', skill.substring(0, 100));
@@ -511,12 +468,12 @@ $w.onReady(function () {
 });
 ```
 
-**For Pro tier:**
+**With a license key:**
 ```javascript
-wixFetch.fetch('https://skills.animotion.click/cdn/pro/opencode?license=YOUR_KEY')
+wixFetch.fetch('https://skills.animotion.click/cdn/agentic/opencode?license=YOUR_KEY')
   .then(response => response.text())
   .then(skill => {
-    console.log('Pro skill loaded');
+    console.log('Agentic skill loaded');
   });
 ```
 
@@ -532,7 +489,7 @@ wixFetch.fetch('https://skills.animotion.click/cdn/pro/opencode?license=YOUR_KEY
 ```html
 <script>
 // Load AnimotionJS skill
-fetch('https://skills.animotion.click/cdn/free/copilot')
+fetch('https://skills.animotion.click/cdn/agentic/copilot?license=YOUR_KEY')
   .then(r => r.text())
   .then(skill => {
     window.animotionSkill = skill;
@@ -548,7 +505,7 @@ fetch('https://skills.animotion.click/cdn/free/copilot')
 
 ```html
 <script>
-fetch('https://skills.animotion.click/cdn/free/copilot')
+fetch('https://skills.animotion.click/cdn/agentic/copilot?license=YOUR_KEY')
   .then(r => r.text())
   .then(skill => {
     document.currentScript.parentElement.setAttribute('data-skill', skill);
@@ -572,7 +529,7 @@ export default function AnimotionSkill() {
   const [skill, setSkill] = useState(null);
 
   useEffect(() => {
-    fetch("https://skills.animotion.click/cdn/free/opencode")
+    fetch("https://skills.animotion.click/cdn/agentic/opencode?license=YOUR_KEY")
       .then(r => r.text())
       .then(setSkill);
   }, []);
@@ -581,10 +538,10 @@ export default function AnimotionSkill() {
 }
 ```
 
-**For Pro tier with license key:**
+**With a license key:**
 ```jsx
 useEffect(() => {
-  fetch("https://skills.animotion.click/cdn/pro/opencode?license=YOUR_KEY")
+  fetch("https://skills.animotion.click/cdn/agentic/opencode?license=YOUR_KEY")
     .then(r => r.text())
     .then(setSkill);
 }, []);
@@ -603,7 +560,7 @@ useEffect(() => {
 ```html
 <script>
 // Load AnimotionJS skill
-fetch('https://skills.animotion.click/cdn/free/copilot')
+fetch('https://skills.animotion.click/cdn/agentic/copilot?license=YOUR_KEY')
   .then(r => r.text())
   .then(skill => {
     window.animotionSkill = skill;
@@ -618,7 +575,7 @@ fetch('https://skills.animotion.click/cdn/free/copilot')
 
 ```liquid
 <script>
-fetch('https://skills.animotion.click/cdn/free/copilot')
+fetch('https://skills.animotion.click/cdn/agentic/copilot?license=YOUR_KEY')
   .then(r => r.text())
   .then(skill => {
     window.animotionSkill = skill;
@@ -626,10 +583,10 @@ fetch('https://skills.animotion.click/cdn/free/copilot')
 </script>
 ```
 
-**For Pro tier:**
+**With a license key:**
 ```html
 <script>
-fetch('https://skills.animotion.click/cdn/pro/copilot?license=YOUR_KEY')
+fetch('https://skills.animotion.click/cdn/agentic/copilot?license=YOUR_KEY')
   .then(r => r.text())
   .then(skill => {
     window.animotionProSkill = skill;
@@ -650,7 +607,7 @@ fetch('https://skills.animotion.click/cdn/pro/copilot?license=YOUR_KEY')
 function load_animotion_skill() {
     ?>
     <script>
-    fetch('https://skills.animotion.click/cdn/free/copilot')
+    fetch('https://skills.animotion.click/cdn/agentic/copilot?license=YOUR_KEY')
       .then(r => r.text())
       .then(skill => {
         window.animotionSkill = skill;
@@ -667,19 +624,19 @@ add_action('wp_head', 'load_animotion_skill');
 2. Add new snippet:
 ```javascript
 // Load AnimotionJS skill
-fetch('https://skills.animotion.click/cdn/free/copilot')
+fetch('https://skills.animotion.click/cdn/agentic/copilot?license=YOUR_KEY')
   .then(r => r.text())
   .then(skill => {
     window.animotionSkill = skill;
   });
 ```
 
-**For Pro tier:**
+**With a license key:**
 ```php
 function load_animotion_pro_skill() {
     ?>
     <script>
-    fetch('https://skills.animotion.click/cdn/pro/copilot?license=YOUR_KEY')
+    fetch('https://skills.animotion.click/cdn/agentic/copilot?license=YOUR_KEY')
       .then(r => r.text())
       .then(skill => {
         window.animotionProSkill = skill;
@@ -702,7 +659,7 @@ add_action('wp_head', 'load_animotion_pro_skill');
 
 ```html
 <script>
-fetch('https://skills.animotion.click/cdn/free/opencode')
+fetch('https://skills.animotion.click/cdn/agentic/opencode?license=YOUR_KEY')
   .then(r => r.text())
   .then(skill => {
     // Store skill data
@@ -715,7 +672,7 @@ fetch('https://skills.animotion.click/cdn/free/opencode')
 **Using Embed:**
 
 1. Type `/embed`
-2. Paste URL: `https://skills.animotion.click/cdn/free/opencode`
+2. Paste URL: `https://skills.animotion.click/cdn/agentic/opencode?license=YOUR_KEY`
 
 ---
 
@@ -728,23 +685,23 @@ fetch('https://skills.animotion.click/cdn/free/opencode')
 
 ```javascript
 // Fetch AnimotionJS skill
-let response = await fetch('https://skills.animotion.click/cdn/free/copilot');
+let response = await fetch('https://skills.animotion.click/cdn/agentic/copilot?license=YOUR_KEY');
 let skill = await response.text();
 
 // Display in output
 output.text('Skill loaded: ' + skill.substring(0, 200) + '...');
 ```
 
-**For Pro tier:**
+**With a license key:**
 ```javascript
-let response = await fetch('https://skills.animotion.click/cdn/pro/copilot?license=YOUR_KEY');
+let response = await fetch('https://skills.animotion.click/cdn/agentic/copilot?license=YOUR_KEY');
 let skill = await response.text();
-output.text('Pro skill loaded');
+output.text('Agentic skill loaded');
 ```
 
 ---
 
-### Zapier / Make (Integromat) / n8n
+### Zapier / Make / n8n
 
 **Using Webhooks:**
 
@@ -755,17 +712,17 @@ output.text('Pro skill loaded');
 
 **URL:**
 ```
-https://skills.animotion.click/cdn/free/copilot
+https://skills.animotion.click/cdn/agentic/copilot?license=YOUR_KEY
 ```
 
-**Headers (for Pro tier):**
+**Headers (license key):**
 ```
 X-License-Key: YOUR_LICENSE_KEY
 ```
 
 **Or use query params:**
 ```
-https://skills.animotion.click/cdn/pro/copilot?license=YOUR_KEY
+https://skills.animotion.click/cdn/agentic/copilot?license=YOUR_KEY
 ```
 
 **Zapier Example:**
@@ -774,7 +731,7 @@ https://skills.animotion.click/cdn/pro/copilot?license=YOUR_KEY
 3. Add **Code by Zapier** → **Run JavaScript**
 4. Code:
 ```javascript
-const response = await fetch('https://skills.animotion.click/cdn/free/copilot');
+const response = await fetch('https://skills.animotion.click/cdn/agentic/copilot?license=YOUR_KEY');
 const skill = await response.text();
 return { skill: skill };
 ```
@@ -783,7 +740,7 @@ return { skill: skill };
 1. Create new scenario
 2. Add **HTTP** module → **Make a request**
 3. Configure:
-   - URL: `https://skills.animotion.click/cdn/free/copilot`
+   - URL: `https://skills.animotion.click/cdn/agentic/copilot?license=YOUR_KEY`
    - Method: GET
 
 **n8n Example:**
@@ -791,7 +748,7 @@ return { skill: skill };
 2. Add **HTTP Request** node
 3. Configure:
    - Method: GET
-   - URL: `https://skills.animotion.click/cdn/free/copilot`
+   - URL: `https://skills.animotion.click/cdn/agentic/copilot?license=YOUR_KEY`
 
 ---
 
@@ -806,12 +763,12 @@ function handleSkill(data) {
   // Use the skill content
 }
 </script>
-<script src="https://skills.animotion.click/embed/skill?agent=copilot&tier=free&callback=handleSkill"></script>
+<script src="https://skills.animotion.click/embed/skill?agent=copilot&tier=agentic&license=YOUR_KEY&callback=handleSkill"></script>
 ```
 
-**For Pro tier:**
+**With a license key:**
 ```html
-<script src="https://skills.animotion.click/embed/skill?agent=copilot&tier=pro&license=YOUR_KEY&callback=handleSkill"></script>
+<script src="https://skills.animotion.click/embed/skill?agent=copilot&tier=agentic&license=YOUR_KEY&callback=handleSkill"></script>
 ```
 
 ---
@@ -821,16 +778,16 @@ function handleSkill(data) {
 Load the skill as a JavaScript variable:
 
 ```html
-<script src="https://skills.animotion.click/load/free/copilot.js"></script>
+<script src="https://skills.animotion.click/load/agentic/copilot.js?license=YOUR_KEY"></script>
 <script>
 // Window.animotionSkill is now available
 console.log(window.animotionSkill);
 </script>
 ```
 
-**For Pro tier:**
+**With a license key:**
 ```html
-<script src="https://skills.animotion.click/load/pro/copilot.js?license=YOUR_KEY"></script>
+<script src="https://skills.animotion.click/load/agentic/copilot.js?license=YOUR_KEY"></script>
 ```
 
 ---
@@ -840,8 +797,8 @@ console.log(window.animotionSkill);
 Access skill content as plain text:
 
 ```
-https://skills.animotion.click/raw/free/copilot
-https://skills.animotion.click/raw/pro/copilot?license=YOUR_KEY
+https://skills.animotion.click/raw/agentic/copilot?license=YOUR_KEY
+https://skills.animotion.click/raw/agentic/copilot?license=YOUR_KEY
 ```
 
 ---
@@ -852,17 +809,17 @@ Embed skill in an iframe:
 
 ```html
 <iframe 
-  src="https://skills.animotion.click/widget/copilot?tier=free" 
+  src="https://skills.animotion.click/widget/copilot?tier=agentic&license=YOUR_KEY" 
   width="100%" 
   height="400"
   frameborder="0">
 </iframe>
 ```
 
-**For Pro tier:**
+**With a license key:**
 ```html
 <iframe 
-  src="https://skills.animotion.click/widget/copilot?tier=pro&license=YOUR_KEY" 
+  src="https://skills.animotion.click/widget/copilot?tier=agentic&license=YOUR_KEY" 
   width="100%" 
   height="400"
   frameborder="0">
@@ -886,7 +843,7 @@ Embed skill in an iframe:
 **Manual Setup:**
 
 1. Create folder: `~/.copilot/skills/animotion/`
-2. Download `SKILL.md` from CDN: `https://skills.animotion.click/cdn/free/copilot`
+2. Download `SKILL.md` from CDN: `https://skills.animotion.click/cdn/agentic/copilot?license=YOUR_KEY`
 3. Place file in the folder
 
 ---
@@ -904,7 +861,7 @@ Embed skill in an iframe:
 **Manual Setup:**
 
 1. Create folder: `~/.cursor/skills/rules/`
-2. Download `animotion.mdc` from CDN: `https://skills.animotion.click/cdn/free/cursor`
+2. Download `animotion.mdc` from CDN: `https://skills.animotion.click/cdn/agentic/cursor?license=YOUR_KEY`
 3. Place file in the folder
 
 ---
@@ -922,7 +879,7 @@ Embed skill in an iframe:
 **Manual Setup:**
 
 1. Create folder: `~/.claude/skills/animotion/`
-2. Download `SKILL.md` from CDN: `https://skills.animotion.click/cdn/free/claude`
+2. Download `SKILL.md` from CDN: `https://skills.animotion.click/cdn/agentic/claude?license=YOUR_KEY`
 3. Place file in the folder
 
 ---
@@ -940,7 +897,7 @@ Embed skill in an iframe:
 **Manual Setup:**
 
 1. Create folder: `~/.opencode/skills/animotion/`
-2. Download `SKILL.md` from CDN: `https://skills.animotion.click/cdn/free/opencode`
+2. Download `SKILL.md` from CDN: `https://skills.animotion.click/cdn/agentic/opencode?license=YOUR_KEY`
 3. Place file in the folder
 
 ---
@@ -958,7 +915,7 @@ Embed skill in an iframe:
 **Manual Setup:**
 
 1. Create folder: `~/.codeium/windsurf/skills/animotion/`
-2. Download `skill.md` from CDN: `https://skills.animotion.click/cdn/free/windsurf`
+2. Download `skill.md` from CDN: `https://skills.animotion.click/cdn/agentic/windsurf?license=YOUR_KEY`
 3. Place file in the folder
 
 ---
@@ -976,7 +933,7 @@ Embed skill in an iframe:
 **Manual Setup:**
 
 1. Create folder: `~/.cody/skills/animotion/`
-2. Download `SKILL.md` from CDN: `https://skills.animotion.click/cdn/free/cody`
+2. Download `SKILL.md` from CDN: `https://skills.animotion.click/cdn/agentic/cody?license=YOUR_KEY`
 3. Place file in the folder
 
 ---
@@ -994,7 +951,7 @@ Embed skill in an iframe:
 **Manual Setup:**
 
 1. Create folder: `~/.codium/skills/animotion/`
-2. Download `skill.md` from CDN: `https://skills.animotion.click/cdn/free/codium`
+2. Download `skill.md` from CDN: `https://skills.animotion.click/cdn/agentic/codium?license=YOUR_KEY`
 3. Place file in the folder
 
 ---
@@ -1012,7 +969,7 @@ Embed skill in an iframe:
 **Manual Setup:**
 
 1. Create folder: `~/.aider/skills/`
-2. Download `CONVENTIONS.md` from CDN: `https://skills.animotion.click/cdn/free/aider`
+2. Download `CONVENTIONS.md` from CDN: `https://skills.animotion.click/cdn/agentic/aider?license=YOUR_KEY`
 3. Place file in the folder
 
 **Note:** Aider uses `CONVENTIONS.md` format without YAML frontmatter.
@@ -1032,14 +989,14 @@ Embed skill in an iframe:
 **Manual Setup:**
 
 1. Create folder: `~/.continue/skills/rules/`
-2. Download `animotion.md` from CDN: `https://skills.animotion.click/cdn/free/continue`
+2. Download `animotion.md` from CDN: `https://skills.animotion.click/cdn/agentic/continue?license=YOUR_KEY`
 3. Place file in the folder
 
 ---
 
-## Tier Comparison
+## API Styles
 
-### Free Tier (Imperative API)
+### Imperative API (JavaScript)
 
 ```javascript
 import Animotion from 'animotionjs-plus';
@@ -1065,7 +1022,7 @@ tl.to('.a', { x: 100 }, 0.5)
   .to('.b', { opacity: 0 }, 0.3, '>', '+=0.2');
 ```
 
-### Pro Tier (Declarative Attributes)
+### Declarative Attributes (HTML)
 
 ```html
 <!-- Fade up on load -->
@@ -1143,7 +1100,7 @@ const skills = new AnimotionSkills({
 });
 
 // Get skill content
-const skill = await skills.getSkill('pro', 'copilot');
+const skill = await skills.getSkill('agentic', 'copilot');
 console.log(skill.content);
 
 // Get documentation
@@ -1166,7 +1123,7 @@ console.log(agents);
 3. **Restart agent:** Close and reopen your AI coding agent
 4. **Check permissions:** Ensure the agent has permission to read the skill directory
 
-### Pro Tier Validation Fails
+### License Validation Fails
 
 1. **Check internet:** License validation requires an internet connection
 2. **Verify credentials:** Ensure your license key or admin credentials are correct
@@ -1175,7 +1132,7 @@ console.log(agents);
 
 ### CDN Returns 401 Unauthorized
 
-1. **Check auth headers:** Pro tier requires `X-License-Key` or `X-Admin-Email` + `X-Admin-Secret`
+1. **Check auth headers:** Skill endpoints require `X-License-Key` or `X-Admin-Email` + `X-Admin-Secret`
 2. **Verify subscription:** Ensure your subscription is active
 3. **Check URL:** Ensure the agent name is correct and lowercase
 
@@ -1209,8 +1166,8 @@ console.log(agents);
 
 ## License
 
-- **Free Tier:** MIT License
-- **Pro Tier:** Proprietary (requires active subscription)
+- **Library:** MIT License
+- **Skill:** Proprietary (requires active subscription)
 - **Agentic Tier:** Proprietary (requires active Studio plan; `studio` is an alias)
 
 ---
