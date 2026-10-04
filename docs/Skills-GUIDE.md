@@ -1119,7 +1119,8 @@ curl "https://skills.animotion.click/cdn/library/templates/saas-landing?license=
 ```
 
 The `studio` tier serves the identical file as `agentic`. Full flow, the five
-modes and the 21-layer catalog: [Agentic Tier Guide](AGENTIC-MODE.md).
+modes, the `/command` set (`/layers`, `/add`, `/animate`, `/recreate`, `/style`)
+and the 21-layer catalog: [Agentic Tier Guide](AGENTIC-MODE.md).
 
 ---
 

@@ -29,12 +29,18 @@ adapt copy & palette → port if needed → write animotion.json → offer the n
 | 2. Add a section to an existing page | "our pricing table is flat" | Search `sections`, materialize, drop it in |
 | 3. Design a 3D scene / hero backdrop | "particles behind the hero" | Search `scenes`, pick plugins by mood, tune params |
 | 4. Add a background or gradient | "something subtle behind the copy" | Search `backgrounds` + `gradients`, lower contrast than feels right |
-| 5. Add motion to an existing project | "animate our dashboard" | Read the code first, propose decisions, then pull layers |
+| 5. Add motion to an existing project | "animate our dashboard", "make a magnetic button", "recreate the scroll effect from stripe.com" | Read the code first — then pull layers, or author the described/recreated interaction directly from the API reference |
 
 Hard rules baked into the skill: **AnimotionJS only for motion** (never GSAP,
 CSS `@keyframes`, jQuery), **never strict-filter the library** (ranked search,
-judged fit), **materialize instead of reinventing**, one committed Style per
-site kept in `animotion.json`.
+judged fit), **materialize instead of reinventing** (except bespoke interactions
+no layer covers — those are authored from the full API reference), one Style per
+site — always the *user's* — kept in `animotion.json`.
+
+**Styling is 100% yours.** Layer style directions and skill defaults only fill
+gaps: state a palette, type pair, spacing or layout change in the prompt and it
+overrides every layer default. The only floors are accessibility (readable
+contrast, reduced-motion support) and keeping sections coherent.
 
 ## The library
 
@@ -70,6 +76,8 @@ performance rules, plus porting notes.
 - **The library-first flow** — Step 0 fetch, the five modes, non-negotiables, session shape
 - **Complete AnimotionJS reference** — tweens, timelines, ScrollTrigger, springs, stagger, paths, eases, variants, declarative `am-*` attributes, plugins, framework bootstraps, performance and accessibility
 - **The layer library** — 21 layers served from `GET /cdn/library`, with search and licensing
+- **Bespoke interactions** — describe the interaction or recreate one from another website, then build it in your project from the complete API reference
+- **Commands** — `/command   type`: `/layers`, `/layer`, `/add`, `/animate`, `/recreate`, `/style`, `/state`, `/next`, `/help`
 - **Project state** — `animotion.json` keeps the committed Style and build order
 
 The underlying references: [Imperative API](IMPERATIVE-API.md) and
@@ -114,6 +122,23 @@ Activate the skill with `/animotion-agentic` (on both tier names):
 The agent's license key is found in order: `ANIMOTION_LICENSE_KEY` env var →
 `animotion-config.json` (`licenseKey`) → ask you.
 
+### Commands — `/command   type`
+
+Inside an active session, start your message with `/` — the first word is the
+command, everything after it is the `type` (argument). No argument means "all".
+
+| Command | Type (argument) | Does |
+|---|---|---|
+| `/layers` | `[kind]` or `search words` | **List every layer** — all five kinds with counts, each layer as `id — name (tier) — description`. Narrow it: `/layers   sections`, `/layers   pricing table` |
+| `/layer` | `<kind/id>` | Summarize one layer (`/layer   sections/pricing-cards`) and offer to build it |
+| `/add` | `<kind/id or words>` | Materialize that layer into your page/project |
+| `/animate` | `<element or interaction>` | Describe the interaction — the agent builds it on your connected project |
+| `/recreate` | `<url or description>` | Recreate a website's effect and apply it to your project |
+| `/style` | `[tokens]` | Show your committed style, or change it: `/style   accent #ff6b6b, display Clash Display` |
+| `/state` | — | Show `animotion.json` — style, layers used, sections built |
+| `/next` | — | Suggest the next layer for what you're building |
+| `/help` | — | Print the command table |
+
 ### Writing good prompts
 
 | Include | Example |
@@ -122,6 +147,8 @@ The agent's license key is found in order: `ANIMOTION_LICENSE_KEY` env var →
 | Animation style | "scroll-triggered stagger, parallax background, spring hover" |
 | Framework | "React component", "Vue page", "Vanilla HTML" |
 | Visual direction | "dark theme, accent #ff6b6b", "minimal, professional" |
+| Full restyle | "layer style directions are just defaults — warm cream bg, serif display, 16px base" |
+| Recreate an effect | "rebuild the nav hover from linear.app on our header", "count-up stats like vercel.com" |
 
 Prompt anatomy: `[page type] + [sections] + [animations] + [framework] + [style] + [requirements]`
 

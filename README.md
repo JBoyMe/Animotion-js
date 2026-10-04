@@ -376,7 +376,7 @@ Also exported: `animotionjs-plus/attrs` (attribute helpers) and `animotionjs-plu
 - **AnimationContext** — scoped animation orchestration
 - **React / Next.js** — hooks: `useAnimotion`, `useAnimotionContext`, `useAnimotionAttributes`
 - **HTML Attributes** — declarative `am-*` attributes (zero JS)
-- **Agent Mode** — the library-first skill that lets AI coding agents (Cursor, Claude, Copilot, opencode, …) drive Animotion from a real layer library (Studio plan; `studio` tier is an alias of `agentic`)
+- **Agent Mode** — the library-first skill that lets AI coding agents (Cursor, Claude, Copilot, opencode, …) drive Animotion from a real layer library: `/command` set (`/layers`, `/add`, `/animate`, `/recreate`), bespoke interaction authoring, user-owned styling (Studio plan; `studio` tier is an alias of `agentic`)
 
 ## Documentation
 
@@ -385,7 +385,7 @@ Also exported: `animotionjs-plus/attrs` (attribute helpers) and `animotionjs-plu
 | [Declarative Attributes Reference](docs/DECLARATIVE-ATTRIBUTES.md) | Every `am-*` attribute, JSON rules, troubleshooting, complete reference |
 | [Imperative API Reference](docs/IMPERATIVE-API.md) | The full JavaScript API — init, tweens, timelines, scroll, text, 3D, plugins, React hooks |
 | [Skills Guide](docs/Skills-GUIDE.md) | Installing and using the agent skills — CLI, CDN, no-code platforms, tier comparison |
-| [Agentic Tier Guide](docs/AGENTIC-MODE.md) | The `agentic` tier — the one full library-first skill (`studio` is its alias): five modes, the layer library, install and usage, `animotion.json` state (Studio plan) |
+| [Agentic Tier Guide](docs/AGENTIC-MODE.md) | The `agentic` tier — the one full library-first skill (`studio` is its alias): five modes, layer commands (`/layers`, `/add`, `/animate`, `/recreate`), bespoke interactions, install and usage, `animotion.json` state (Studio plan) |
 
 Docs are also served over the CDN as markdown: `https://skills.animotion.click/cdn/docs/IMPERATIVE-API`
 
