@@ -34,14 +34,14 @@
 
 ## Overview
 
-AnimotionJS skills provide your AI coding agent with knowledge of the AnimotionJS animation library. Four tiers are available (Free and Pro are detailed below; the Studio tier has its own [Studio Tier Guide](STUDIO-GUIDE.md)):
+AnimotionJS skills provide your AI coding agent with knowledge of the AnimotionJS animation library. Four tiers are available (Free and Pro are detailed below; the Agentic tier — `studio` is its deprecated alias — has its own [Agentic Tier Guide](AGENTIC-MODE.md)):
 
 | Tier | Price | Features | Authentication |
 |------|-------|----------|----------------|
 | **Free** | $0 | Imperative API (`to()`, `from()`, `spring()`, `timeline()`) | None required |
 | **Pro** | $7/month (Stripe) | Declarative HTML attributes (`am-*`), no JavaScript required | License key or Admin credentials |
-| **Studio** | $15/month (Stripe) | Library-first skill: templates, sections, scenes, backgrounds, gradients from `GET /cdn/library` | License key or Admin credentials |
-| **Agentic** | $15/month (Stripe) | Deprecated alias of Studio — identical skill file | License key or Admin credentials |
+| **Agentic** | $15/month (Stripe) | Library-first skill: templates, sections, scenes, backgrounds, gradients from `GET /cdn/library` | License key or Admin credentials |
+| **Studio** | $15/month (Stripe) | Deprecated alias of Agentic — identical skill file | License key or Admin credentials |
 
 > **Pro Tier Subscription:** The $7/month license is processed via Stripe. Your license key is tied to your Stripe subscription. If you cancel your subscription, your license will be invalidated at the end of the billing period.
 
@@ -383,8 +383,8 @@ const skill = await response.text();
 |----------|--------|-------------|---------------|-----------------|
 | `/cdn/free/{agent}` | GET | Free tier skill file | No | text/markdown or application/json |
 | `/cdn/pro/{agent}` | GET | Pro tier skill file | Yes | text/markdown or application/json |
-| `/cdn/studio/{agent}` | GET | Studio tier skill file (library-first) | Yes | text/markdown |
-| `/cdn/agentic/{agent}` | GET | Alias of `studio` — identical file | Yes | text/markdown |
+| `/cdn/agentic/{agent}` | GET | Agentic tier skill file (library-first) | Yes | text/markdown |
+| `/cdn/studio/{agent}` | GET | Alias of `agentic` — identical file | Yes | text/markdown |
 | `/cdn/library` | GET | Layer library index (kinds, layer metadata, plugins, docs) | No | application/json |
 | `/cdn/library/{kind}` | GET | Browse/search one layer kind — `?q=` ranked search | Premium layers need license | application/json |
 | `/cdn/library/{kind}/{id}` | GET | Full layer prompt + animation spec | Premium layers need license | application/json |
@@ -1105,9 +1105,9 @@ tl.to('.a', { x: 100 }, 0.5)
 
 ---
 
-### Studio / Agentic Tier (library-first skill)
+### Agentic Tier (library-first skill)
 
-The Studio skill doesn't ship code samples — it drives a live library over HTTP:
+The Agentic skill doesn't ship code samples — it drives a live library over HTTP:
 
 ```bash
 # Step 0: the skill always fetches the layer index first
@@ -1118,9 +1118,8 @@ curl "https://skills.animotion.click/cdn/library/sections?q=pricing+table"
 curl "https://skills.animotion.click/cdn/library/templates/saas-landing?license=YOUR_KEY"
 ```
 
-The `agentic` tier serves the identical file as `studio`. Full flow, the five
-modes and the 21-layer catalog: [Studio Tier Guide](STUDIO-GUIDE.md) ·
-[Agent Mode](AGENTIC-MODE.md).
+The `studio` tier serves the identical file as `agentic`. Full flow, the five
+modes and the 21-layer catalog: [Agentic Tier Guide](AGENTIC-MODE.md).
 
 ---
 
@@ -1209,7 +1208,7 @@ console.log(agents);
 
 - **Free Tier:** MIT License
 - **Pro Tier:** Proprietary (requires active subscription)
-- **Studio Tier:** Proprietary (requires active Studio plan; `agentic` is an alias)
+- **Agentic Tier:** Proprietary (requires active Studio plan; `studio` is an alias)
 
 ---
 

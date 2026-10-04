@@ -11,7 +11,7 @@ Two usage tiers:
 
 - **Free** — the full imperative JavaScript API (`Animotion.to()`, timelines, scroll, springs, …)
 - **Pro ($7/mo)** — everything free, plus declarative `am-*` HTML attributes with zero JavaScript, Pro plugins, and Pro AI-agent skills
-- **Studio ($15/mo)** — everything in Pro, plus the library-first **Studio skill** for AI coding agents (templates, sections, 3D scenes, backgrounds, gradients — the legacy `agentic` tier is an alias of it)
+- **Studio ($15/mo)** — everything in Pro, plus the library-first **Agentic skill** for AI coding agents (templates, sections, 3D scenes, backgrounds, gradients — the legacy `studio` tier is an alias of it)
 
 > **Note:** This repository publishes documentation and license information only. The engine source code is distributed through the [npm package](https://www.npmjs.com/package/animotionjs-plus).
 
@@ -187,8 +187,8 @@ Skills teach your AI coding agent (Cursor, Claude Code, Copilot, opencode, …) 
 |------|--------------|------|-------|
 | **free** | Imperative API skill | — | $0 |
 | **pro** | Declarative `am-*` attributes skill | Pro | $7/mo |
-| **studio** | Library-first skill — templates, sections, scenes, backgrounds, gradients | Studio | $15/mo |
-| **agentic** | Deprecated alias of `studio` — identical file | Studio | $15/mo |
+| **agentic** | Library-first skill — templates, sections, scenes, backgrounds, gradients | Studio | $15/mo |
+| **studio** | Deprecated alias of `agentic` — identical file | Studio | $15/mo |
 
 ### Install with the CLI (recommended)
 
@@ -199,22 +199,22 @@ npx animotion-skills install
 # Pro tier
 npx animotion-skills install --tier=pro --license-key=YOUR_KEY
 
-# Studio tier — library-first skill
-npx animotion-skills install --tier=studio --license-key=YOUR_KEY
-
-# Agentic tier — deprecated alias, installs the identical skill
+# Agentic tier — library-first skill
 npx animotion-skills install --tier=agentic --license-key=YOUR_KEY
+
+# Studio tier — deprecated alias, installs the identical skill
+npx animotion-skills install --tier=studio --license-key=YOUR_KEY
 
 # Specific agent / everything detected
 npx animotion-skills install --agent=copilot
 npx animotion-skills install --all
 ```
 
-Options: `--tier <free|pro|studio|agentic>`, `--license-key <key>`, `--admin-email <email>`, `--admin-secret <secret>`, `--agent <name>`, `--all`, `--force`, `--list`, `--detect`.
+Options: `--tier <free|pro|agentic|studio>`, `--license-key <key>`, `--admin-email <email>`, `--admin-secret <secret>`, `--agent <name>`, `--all`, `--force`, `--list`, `--detect`.
 
 **Supported agents (15):** `aider`, `amazonq`, `augment`, `claude`, `cline`, `codex`, `codium`, `cody`, `continue`, `copilot`, `cursor`, `jetbrains`, `opencode`, `roo`, `windsurf`
 
-Tier deep-dives: **[Studio tier](docs/STUDIO-GUIDE.md)** (`studio`) — the merged library-first skill — and **[Agent Mode](docs/AGENTIC-MODE.md)** (`agentic`, its deprecated alias). Both require the Studio plan.
+Tier deep-dives: **[Agentic guide](docs/AGENTIC-MODE.md)** — the `agentic` tier is the one full skill (`studio` is its deprecated alias). Both require the Studio plan.
 
 ### CDN endpoints
 
@@ -222,7 +222,7 @@ Base URL: `https://skills.animotion.click` — all endpoints send `Access-Contro
 
 | Endpoint | Returns |
 |----------|---------|
-| `GET /cdn/{tier}/{agent}` | Raw skill text (e.g. `/cdn/free/opencode`, `/cdn/pro/copilot`, `/cdn/studio/copilot`) |
+| `GET /cdn/{tier}/{agent}` | Raw skill text (e.g. `/cdn/free/opencode`, `/cdn/pro/copilot`, `/cdn/agentic/copilot`) |
 | `GET /cdn/library` | Layer library index — kinds, layer metadata, plugin catalog, docs (no auth) |
 | `GET /cdn/library/{kind}?q=` | Browse/search one kind: `templates`, `sections`, `scenes`, `backgrounds`, `gradients` |
 | `GET /cdn/library/{kind}/{id}` | Full layer prompt + animation spec (free layers open, premium needs `?license=KEY`) |
@@ -326,7 +326,7 @@ Payments run through Stripe's hosted checkout — the same flow as the Animotion
 | Plan | Price | Unlocks | Get a key |
 |------|-------|---------|-----------|
 | **Pro** | $7 / month | Declarative `am-*` attributes, Pro plugins, Pro skills | [**Get Pro key**](https://skills.animotion.click/checkout?plan=pro) |
-| **Studio** | $15 / month | Everything in Pro + the library-first Studio skill (21-layer library; `agentic` included as an alias) | [**Get Studio key**](https://skills.animotion.click/checkout?plan=studio) |
+| **Studio** | $15 / month | Everything in Pro + the library-first Agentic skill (21-layer library; `studio` included as an alias) | [**Get Studio key**](https://skills.animotion.click/checkout?plan=studio) |
 
 The checkout page collects your email, redirects to Stripe, and shows your license key as soon as the payment is confirmed.
 
@@ -376,7 +376,7 @@ Also exported: `animotionjs-plus/attrs` (attribute helpers) and `animotionjs-plu
 - **AnimationContext** — scoped animation orchestration
 - **React / Next.js** — hooks: `useAnimotion`, `useAnimotionContext`, `useAnimotionAttributes`
 - **HTML Attributes** — declarative `am-*` attributes (zero JS)
-- **Agent Mode** — the library-first skill that lets AI coding agents (Cursor, Claude, Copilot, opencode, …) drive Animotion from a real layer library (Studio plan; `agentic` tier is an alias of `studio`)
+- **Agent Mode** — the library-first skill that lets AI coding agents (Cursor, Claude, Copilot, opencode, …) drive Animotion from a real layer library (Studio plan; `studio` tier is an alias of `agentic`)
 
 ## Documentation
 
@@ -385,8 +385,7 @@ Also exported: `animotionjs-plus/attrs` (attribute helpers) and `animotionjs-plu
 | [Declarative Attributes Reference](docs/DECLARATIVE-ATTRIBUTES.md) | Every `am-*` attribute, JSON rules, troubleshooting, complete reference |
 | [Imperative API Reference](docs/IMPERATIVE-API.md) | The full JavaScript API — init, tweens, timelines, scroll, text, 3D, plugins, React hooks |
 | [Skills Guide](docs/Skills-GUIDE.md) | Installing and using the agent skills — CLI, CDN, no-code platforms, tier comparison |
-| [Studio Tier Guide](docs/STUDIO-GUIDE.md) | The `studio` tier — the library-first skill: five modes, the layer library, `animotion.json` state (Studio plan) |
-| [Agent Mode](docs/AGENTIC-MODE.md) | The `agentic` tier — now a deprecated alias of the Studio skill (Studio plan) |
+| [Agentic Tier Guide](docs/AGENTIC-MODE.md) | The `agentic` tier — the one full library-first skill (`studio` is its alias): five modes, the layer library, install and usage, `animotion.json` state (Studio plan) |
 
 Docs are also served over the CDN as markdown: `https://skills.animotion.click/cdn/docs/IMPERATIVE-API`
 
