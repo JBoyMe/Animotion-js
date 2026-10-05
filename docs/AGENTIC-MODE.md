@@ -9,94 +9,50 @@
 > same price, same activation command. Existing users of either tier change
 > nothing.
 
-The Agentic skill is a **library-first** way to build animated pages with
-AnimotionJS: before writing any code, the agent fetches the Animotion library
-index, routes to one of six build modes, and materializes a real **layer** —
-a finished template, section, 3D scene, background, gradient, or a
-plug-and-play **AI prompt kit** for media and UI components — instead of
-inventing generic code.
+The Agentic skill turns your agent into an **AnimotionJS recreation engine**.
+Give it any of four inputs — a prompt copied from getlayers.ai or motionsites.ai,
+a website link, a video file or URL, or a plain description of what you want —
+and it rebuilds the result strictly with AnimotionJS: the imperative API, the
+declarative `am-*` attributes and the plugin CDN. No other animation library is
+ever used.
 
 ## The flow
 
-```
-load library (GET /cdn/library, read animotion.json) → present the 6 modes →
-route → soft brief → commit ONE Style → materialize template, section or
-prompt kit → fill slots / adapt copy & palette → recreate the interaction in
-AnimotionJS → port if needed → write animotion.json → offer the next layer
-```
-
-| Mode | You say | Agent does |
-|------|---------|------------|
-| 1. Build a page from a template | "SaaS landing page" | Search `templates`, re-skin one (copy, palette, type, motion) |
-| 2. Add a section to an existing page | "our pricing table is flat" | Search `sections`, materialize, drop it in |
-| 3. Design a 3D scene / hero backdrop | "particles behind the hero" | Search `scenes`, pick plugins by mood, tune params |
-| 4. Add a background or gradient | "something subtle behind the copy" | Search `backgrounds` + `gradients`, lower contrast than feels right |
-| 5. Add motion to an existing project | "animate our dashboard", "make a magnetic button", "recreate the scroll effect from stripe.com" | Read the code first — then pull layers, or author the described/recreated interaction directly from the API reference |
-| 6. Generate media or a UI component from an AI Prompt kit | "generate a hero image in our style", "a video loop for the showcase", "build this Figma card with hover states" | Search `ai-prompts`, fill the kit's slots with their asset, UI design and style, hand over the generation prompt, then build it and recreate its interaction strictly with AnimotionJS |
+| Input | You say | Agent does |
+|-------|---------|------------|
+| 1. A pasted prompt | paste what you copied from getlayers.ai / motionsites.ai | Reads what the prompt is asking for (hero, section, background, component, motion idea), maps every motion concept to an AnimotionJS call, builds it in your project |
+| 2. A website link | `/recreate https://stripe.com` | Inspects the page, writes a motion spec (what moves, when, with which ease and staging), rebuilds it — same look, same timing, AnimotionJS only |
+| 3. A video | `/video ./hero.mp4` or `/video https://…/hero.mp4` | Studies the clip's timing and beats, recreates it as an AnimotionJS sequence (scroll, text, media, 3D as needed) |
+| 4. A plain description | "animate our dashboard", "magnetic button", "stagger the features" | Authors the described interaction straight from the full API reference |
 
 Hard rules baked into the skill: **AnimotionJS only for motion** (never GSAP,
-CSS `@keyframes`, jQuery), **never strict-filter the library** (ranked search,
-judged fit), **materialize instead of reinventing** (except bespoke interactions
-no layer covers — those are authored from the full API reference), one Style per
-site — always the *user's* — kept in `animotion.json`. An **AI Prompt kit
-always ships in pairs**: the generation prompt and the AnimotionJS recreation
-of what it describes are one deliverable.
-
-**Styling is 100% yours.** Layer style directions and skill defaults only fill
-gaps: state a palette, type pair, spacing or layout change in the prompt and it
-overrides every layer default. The only floors are accessibility (readable
-contrast, reduced-motion support) and keeping sections coherent.
-
-## The library
-
-| Kind | What it is | Layers |
-|------|-----------|--------|
-| `templates` | Full pages — hero, landing, portfolio, showcase, horizontal scroll, agency split | 6 |
-| `sections` | Drop-in blocks — features, pricing, FAQ, testimonials, stats | 5 |
-| `scenes` | 3D / particle / shader backdrops on plugins | 4 |
-| `backgrounds` | Video and ambient backdrops behind content | 3 |
-| `gradients` | Pointer-reactive gradients, mesh fields, kinetic dividers | 3 |
-| `ai-prompts` | **AI Prompt** kits — plug-and-play prompts for image, video, 3D animation and UI code components, with slots to drop in your own asset, UI design and styles | 4 |
-
-**Free layers** (no key): `templates/cinematic-hero`, `sections/feature-stagger`,
-`scenes/particle-field`, `backgrounds/video-hero`, `gradients/pointer-gradient`,
-plus every `ai-prompts` kit. Every other layer needs the Studio license.
-
-```bash
-# Index — kinds, layer metadata, plugin catalog, docs, usage (no auth)
-curl https://skills.animotion.click/cdn/library
-
-# Ranked search in the user's own language — never a tag whitelist
-curl "https://skills.animotion.click/cdn/library/sections?q=pricing+table"
-
-# AI Prompt kits — free, no key needed
-curl "https://skills.animotion.click/cdn/library/ai-prompts?q=video+hero"
-
-# Materialize one layer — full prompt + animation spec
-curl "https://skills.animotion.click/cdn/library/templates/saas-landing?license=YOUR_KEY"
-```
-
-Every layer file carries: when to use it, structure spec, the exact Animotion
-calls (timings, eases, timeline positions), style direction, accessibility and
-performance rules, plus porting notes. An `ai-prompts` kit additionally carries
-its plug-and-play slots and a **Prompt (copy-paste)** block: fill the slots
-with the user's asset, UI design and style, hand the prompt over, then recreate
-the behaviour it describes with AnimotionJS — imperative API or `am-*`
-attributes, nothing else.
+CSS `@keyframes`, jQuery), **match the source exactly** when recreating (timing,
+easing, staging), **read the existing project first** — its styling and
+structure win — and **never guess at an unreadable source**: ask, or state the
+assumption, instead of inventing.
 
 ## What's inside the skill
 
-- **The library-first flow** — Step 0 fetch, the six modes, non-negotiables, session shape
+- **Entry points** — `/recreate` (link or description), `/video`, `/animate`, plus plain pasted prompts; the agent picks the right one and never loses the original request
 - **Complete AnimotionJS reference** — a surface map of all 50 API sections (foundations, scroll, pointer input, text, media, Lottie/Rive, state machines, shaders/Three.js, principles) plus tweens, timelines, ScrollTrigger, springs, stagger, paths, eases, variants, declarative `am-*` attributes, plugins, framework bootstraps, performance and accessibility
-- **The layer library** — 25 layers served from `GET /cdn/library`, with search and licensing
-- **AI Prompt kits** — the `ai-prompts` kind: image, video, 3D animation and UI component prompts with plug-and-play slots, each with the AnimotionJS spec that recreates its behaviour
+- **One command per feature area** — `/core`, `/scroll`, `/text`, `/pointer`, `/media`, `/files`, `/path`, `/three`, `/state`, `/layout`, `/principles`, `/ease`, `/attr`, `/plugins`, `/plugin`, `/oil`, `/perf`, `/a11y`
+- **Project setup** — `/init` writes the licence and bootstrap for your stack (vanilla, React, Next.js), `/key` manages the license key
 - **Bespoke interactions** — describe the interaction or recreate one from another website, then build it in your project from the complete API reference
 - **Oil Motion** — point the agent at your video section (already set up with `am-video-oil-motion`), say which part of the video and what interaction you want — it generates the attributes, timeline or agent config for you
-- **Commands** — `/command   type`: `/help`, `/modes`, `/layers`, `/search`, `/layer`, `/prompt`, `/add`, `/plugins`, `/plugin`, `/oil`, `/animate`, `/recreate`, `/init`, `/style`, `/state`, `/next`, `/docs`, `/key`
-- **Project state** — `animotion.json` keeps the committed Style and build order
+- **References on demand** — `/docs imperative|declarative|quick|install|no-code` fetches the guides from the CDN when the agent needs them
 
 The underlying references: [Imperative API](IMPERATIVE-API.md) and
 [Declarative Attributes](DECLARATIVE-ATTRIBUTES.md).
+
+## Prerequisites
+
+- **Node.js 18+** (for the npm/npx installer)
+- One or more supported AI coding agents installed
+- An active **Studio** subscription ($15/month) — see [License & subscription](#license--subscription)
+
+**Supported agents (15):** `aider`, `amazonq`, `augment`, `claude`, `cline`,
+`codex`, `codium`, `cody`, `continue`, `copilot`, `cursor`, `jetbrains`,
+`opencode`, `roo`, `windsurf`.
 
 ## Installing
 
@@ -110,7 +66,24 @@ npx animotion-skills install --tier=agentic --all --license-key=YOUR_KEY
 
 # Studio tier — deprecated alias, installs the identical skill
 npx animotion-skills install --tier=studio --license-key=YOUR_KEY
+
+# Force reinstall (overwrite an existing install)
+npx animotion-skills install --all --force
+
+# Install with admin credentials instead of a personal key
+npx animotion-skills install --tier=agentic --admin-email=you@email.com --admin-secret=SECRET
 ```
+
+```bash
+# Global install, then the short alias
+npm install -g animotion-skills
+as install --agent=copilot
+as install --all --tier=agentic --license-key=YOUR_KEY
+```
+
+Useful flags: `--detect` (list detected agents), `--list` (all supported
+agents), `--agent <name>`, `--all`, `--force`, `--admin-email` /
+`--admin-secret`.
 
 CDN (raw skill text — requires `?license=` or `X-License-Key`):
 
@@ -120,23 +93,42 @@ GET https://skills.animotion.click/cdn/studio/opencode?license=YOUR_KEY   # alia
 GET https://skills.animotion.click/load/agentic/opencode.js?license=YOUR_KEY
 ```
 
-Without a key the endpoints respond `401`. See the [Skills Guide](Skills-GUIDE.md)
-for all endpoints and the full agent list (15 supported).
+Without a key the endpoints respond `401` — see [CDN access](#cdn-access) for
+every endpoint, auth method and example.
+
+## License & subscription
+
+The skill ships with a **$15/month Studio** subscription, processed by Stripe.
+
+1. **Subscribe:** visit https://skills.animotion.click/checkout
+2. **Receive the license key:** it arrives by email right after payment
+3. **Install:** pass it with `--license-key=YOUR_KEY`
+4. **Renewal:** Stripe renews monthly
+5. **Validation:** the skill validates the key against the backend daily
+
+```
+subscribe → Stripe subscription active → license key generated (Supabase)
+→ skill validates and works → monthly renewal
+→ cancelled → license invalidated at the end of the billing period → skill stops
+```
+
+- **Manage subscription:** https://billing.stripe.com
+- **Key lookup order inside the agent:** `ANIMOTION_LICENSE_KEY` env var →
+  `animotion-config.json` (`licenseKey`) → ask you
+- **Teams:** an admin can use `X-Admin-Email` + `X-Admin-Secret` instead of
+  individual keys; the secret is encrypted when stored locally
 
 ## Using it
 
 Activate the skill with `/animotion-agentic` (on both tier names):
 
 ```
-/animotion-agentic Build a SaaS landing page with scroll animations
-/animotion-agentic Add a pricing section to our existing page
-/animotion-agentic Put a particle field behind the hero
+/animotion-agentic /recreate https://stripe.com
+/animotion-agentic /video ./hero.mp4
+/animotion-agentic [paste the prompt you copied from getlayers.ai]
 /animotion-agentic Animate this dashboard — reading the code first
-/animotion-agentic Generate a hero image in our brand style and build the section around it
+/animotion-agentic Make a magnetic button with spring hover
 ```
-
-The agent's license key is found in order: `ANIMOTION_LICENSE_KEY` env var →
-`animotion-config.json` (`licenseKey`) → ask you.
 
 ### Commands — `/command   type`
 
@@ -144,75 +136,392 @@ Inside an active session, start your message with `/` — the first word is the
 command, everything after it is the `type` (argument). No argument means "all".
 Commands are case-insensitive and also work without the leading `/`.
 
+**Entry points**
+
 | Command | Type (argument) | Does |
 |---|---|---|
 | `/help` | — | Print the command table |
-| `/modes` | — | Show the six build modes and route your request to one |
-| `/layers` | `[kind]` or `search words` | **List every layer** — all six kinds with counts, each layer as `id — name (tier) — description`. Narrow it: `/layers   sections`, `/layers   pricing table` |
-| `/search` | `<words>` | Ranked search in your own words (alias of `/layers   <words>`) |
-| `/layer` | `<kind/id>` | Summarize one layer (`/layer   sections/pricing-cards`) and offer to build it |
-| `/prompt` | `<kit id or media>` | One **AI Prompt** kit (`/prompt   image-hero-kit`, or `image`, `video`, `3d`, `ui`): its slots, the copy-paste prompt block, and an offer to fill the slots and build the section with its AnimotionJS animation |
-| `/add` | `<kind/id or words>` | Materialize that layer into your page/project |
+| `/start` | — | Restate the request, pick the right entry point and lay out the plan |
+| `/recreate` | `<url or description>` | Recreate a website's effect (or a described one) and apply it to your project |
+| `/video` | `<file path or URL>` | Recreate a video as an AnimotionJS sequence — same timing and beats |
+| `/animate` | `<element or interaction>` | Describe the interaction — the agent builds it on your connected project |
+
+**Engine features** — one command per area of the API
+
+| Command | Type (argument) | Does |
+|---|---|---|
+| `/core` | `[topic]` | Foundations: init, `Animotion.to/timeline`, easing, stagger, variants, delays |
+| `/scroll` | `[topic]` | ScrollTrigger: pin, scrub, reverse, callbacks, auto-stagger |
+| `/text` | `[topic]` | SplitText, TextEffects (typewriter, wave, scramble), reveals |
+| `/pointer` | `[topic]` | Pointer/mouse input, Draggable, hover and press gestures |
+| `/media` | `[topic]` | Video and audio scrubbing, Lottie/dotLottie, PNGSequence |
+| `/files` | — | Which references are available and how to fetch them |
+| `/path` | — | MotionPath along SVG paths or point arrays |
+| `/three` | `[topic]` | Three.js objects, GLTF state machines, WebGL shaders |
+| `/state` | `[topic]` | ViewModel, StateMachine, Binding — data-driven animation |
+| `/layout` | — | Layouts: circular, orbit, spiral, wave, scatter, radial-tree |
+| `/principles` | — | Principles helpers: parallax, marquee, tilt, and friends |
+| `/ease` | `[name]` | The easing catalog and when to use each curve |
+
+**Attributes, plugins and setup**
+
+| Command | Type (argument) | Does |
+|---|---|---|
+| `/attr` | `[attribute]` | Declarative `am-*` attribute reference and usage |
 | `/plugins` | `[category]` | The 40-plugin catalog with tiers, grouped by category (`effects`, `physics`, `three`, `layout`, `scroll`, `text`, `debug`) |
 | `/plugin` | `<slug>` | One plugin (`/plugin   particles`): what it does, tier, and the exact registration snippet |
 | `/oil` | `<section selector and/or ask>` | Oil Motion: point at the video section you already set up (`/oil   #showcase`), say which part of the video and what interaction — the agent generates the config |
-| `/animate` | `<element or interaction>` | Describe the interaction — the agent builds it on your connected project |
-| `/recreate` | `<url or description>` | Recreate a website's effect and apply it to your project |
 | `/init` | `cdn`, `npm`, `react`, `vue`, `svelte`, or `astro` | The setup snippet for that stack — script/import, `init({ licenseKey })`, cleanup |
-| `/style` | `[tokens]` | Show your committed style, or change it: `/style   accent #ff6b6b, display Clash Display` |
-| `/state` | — | Show `animotion.json` — style, layers used, sections built |
-| `/next` | — | Suggest the next layer for what you're building |
-| `/docs` | `<topic>` | Fetch a reference: `imperative`, `declarative`, `quick`, `install`, `no-code`, `adding-layers` |
+| `/perf` | — | Performance rules: durations, will-change, batching, reduced cost on mobile |
+| `/a11y` | — | Accessibility floors: readable contrast, `prefers-reduced-motion`, focus |
+| `/docs` | `<topic>` | Fetch a reference: `imperative`, `declarative`, `quick`, `install`, `no-code` |
 | `/key` | — | Where the license key lives and how to add one |
 
 ### Writing good prompts
 
 | Include | Example |
 |---------|---------|
+| The source | "recreate https://linear.app/pricing", "[paste the getlayers.ai prompt]", "/video ./showreel.mp4" |
 | Page type + sections | "SaaS landing page with hero, features, pricing, testimonials" |
 | Animation style | "scroll-triggered stagger, parallax background, spring hover" |
 | Framework | "React component", "Vue page", "Vanilla HTML" |
 | Visual direction | "dark theme, accent #ff6b6b", "minimal, professional" |
-| Full restyle | "layer style directions are just defaults — warm cream bg, serif display, 16px base" |
 | Recreate an effect | "rebuild the nav hover from linear.app on our header", "count-up stats like vercel.com" |
-| Generate media with a kit | "/prompt   video — scroll-scrubbed product loop in our style", "generate a 3D turntable of this model, our palette" |
 | Oil Motion | "#showcase has Oil Motion wired up — make the first three seconds scrub with the scroll" |
 
-Prompt anatomy: `[page type] + [sections] + [animations] + [framework] + [style] + [requirements]`
+Prompt anatomy: `[source] + [page type] + [animations] + [framework] + [style] + [requirements]`
 
-## Project state: `animotion.json`
+## CDN access
 
-The skill keeps a state file at the project root so long builds don't drift:
+Base URL: `https://skills.animotion.click` — every endpoint answers with
+`Access-Control-Allow-Origin: *`, skill endpoints cache as
+`private, no-cache`.
+
+### Authentication methods
+
+Three ways to authenticate; all of them require an active Studio subscription.
+
+**1. License key (recommended)** — header or query parameter:
+
+```
+X-License-Key: am_abc123def456ghi789jkl012mno345
+?license=am_abc123def456ghi789jkl012mno345
+```
+
+**2. Admin credentials (teams)** — header or query parameter:
+
+```
+X-Admin-Email: admin@company.com
+X-Admin-Secret: sec_9f8e7d6c5b4a3210
+?adminEmail=admin@company.com&adminSecret=sec_9f8e7d6c5b4a3210
+```
+
+**3. Session token (server-to-server)** — mint one, then send it as a bearer:
+
+```bash
+POST https://skills.animotion.click/api/auth/session
+Content-Type: application/json
+
+{ "licenseKey": "YOUR_LICENSE_KEY" }
+```
 
 ```json
-{
-  "style": {
-    "palette": { "bg": "#0b0b12", "surface": "#14141f", "text": "#f4f4f8", "accent": "#ff6b6b" },
-    "type": { "display": "Clash Display", "body": "Inter" },
-    "motion": { "duration": 0.7, "ease": "power3.out", "stagger": 0.08 }
-  },
-  "layers": ["templates/saas-landing", "sections/pricing-cards"],
-  "built": ["hero", "features", "pricing"]
+{ "token": "eyJhbGciOiJIUzI1NiIs...", "expiresIn": 86400 }
+```
+
+```
+Authorization: Bearer eyJhbGciOiJIUzI1NiIs...
+```
+
+### Endpoints
+
+| Endpoint | Description | Auth | Response |
+|----------|-------------|------|----------|
+| `/cdn/agentic/{agent}` | The agentic skill file | Yes | `text/markdown` (`application/json` for `cursor`) |
+| `/cdn/studio/{agent}` | Alias of `agentic` — identical file | Yes | `text/markdown` |
+| `/cdn/library` | Content library index — optional, not used by the skill (kinds, plugins, docs) | No | JSON |
+| `/cdn/library/{kind}` | Browse/search one kind, `?q=` ranked search | No (premium entries need license) | JSON |
+| `/cdn/library/{kind}/{id}` | Full content entry — prompt + animation spec | Free entries open, premium needs license | JSON |
+| `/cdn/docs/{doc}` | Documentation as markdown (`IMPERATIVE-API`, `DECLARATIVE-ATTRIBUTES`, `INSTALLATION-GUIDE`, `NO-CODE-GUIDE`, `QUICK-REFERENCE`) | No | `text/markdown` |
+| `/cdn/agents` | Supported agents + tiers | No | JSON |
+| `/cdn/plugins` | Plugin catalog | No | JSON |
+| `/load/{tier}/{agent}.js` | Script loader — fires `animotion-skill-loaded` | Yes (`?license=`) | `application/javascript` |
+| `/raw/{tier}/{agent}` | Plain text for `fetch()` / automation | Yes | `text/markdown` |
+| `/widget/{agent}?tier=agentic` | Embeddable HTML viewer (iframe) | Yes | HTML |
+| `/embed/skill?agent=&tier=agentic&callback=` | JSONP | Yes | `application/javascript` |
+| `/embed/urls?license=` | Every embeddable URL as JSON | Yes | JSON |
+| `/api/license/validate` | Validate a license key | Yes | JSON |
+| `/api/auth/session` | Mint a session token | Yes | JSON |
+
+X-Auth on skill responses reports which method was used (`license`, `admin`,
+`session`).
+
+### Examples
+
+```bash
+# License key as a header
+curl -H "X-License-Key: am_abc123def456ghi789jkl012mno345" \
+     https://skills.animotion.click/cdn/agentic/copilot
+
+# License key as a query parameter
+curl "https://skills.animotion.click/cdn/agentic/copilot?license=YOUR_KEY"
+
+# Admin credentials
+curl "https://skills.animotion.click/cdn/agentic/opencode?adminEmail=admin@company.com&adminSecret=sec_9f8e7d6c5b4a3210"
+```
+
+```javascript
+const response = await fetch('https://skills.animotion.click/cdn/agentic/claude?license=YOUR_KEY', {
+  headers: { 'X-License-Key': 'am_abc123def456ghi789jkl012mno345' }
+});
+const skill = await response.text();
+```
+
+```python
+import requests
+
+headers = {'X-License-Key': 'am_abc123def456ghi789jkl012mno345'}
+skill = requests.get('https://skills.animotion.click/cdn/agentic/copilot?license=YOUR_KEY',
+                     headers=headers).text
+```
+
+```powershell
+$headers = @{ "X-License-Key" = "am_abc123def456ghi789jkl012mno345" }
+$skill = Invoke-WebRequest -Uri "https://skills.animotion.click/cdn/agentic/copilot?license=YOUR_KEY" -Headers $headers
+```
+
+```bash
+# Documentation
+curl https://skills.animotion.click/cdn/docs/IMPERATIVE-API
+curl https://skills.animotion.click/cdn/docs/DECLARATIVE-ATTRIBUTES
+```
+
+### Script loader
+
+```html
+<script src="https://skills.animotion.click/load/agentic/copilot.js?license=YOUR_KEY"></script>
+<script>
+  document.addEventListener('animotion-skill-loaded', function (e) {
+    console.log(e.detail.tier, e.detail.agent, e.detail.content);
+  });
+</script>
+```
+
+### JSONP (legacy platforms)
+
+```html
+<script>
+  function handleSkill(data) { console.log(data.content); }
+</script>
+<script src="https://skills.animotion.click/embed/skill?agent=copilot&tier=agentic&license=YOUR_KEY&callback=handleSkill"></script>
+```
+
+### Raw text and embed widget
+
+```
+https://skills.animotion.click/raw/agentic/copilot?license=YOUR_KEY
+```
+
+```html
+<iframe src="https://skills.animotion.click/widget/copilot?tier=agentic&license=YOUR_KEY"
+        width="100%" height="400" frameborder="0"></iframe>
+```
+
+### Programmatic API (Node)
+
+```javascript
+const { AnimotionSkills } = require('animotion-skills');
+
+const skills = new AnimotionSkills('YOUR_LICENSE_KEY');
+// or: new AnimotionSkills({ adminEmail: 'you@email.com', adminSecret: 'SECRET' })
+
+const skill = await skills.getSkill('agentic', 'copilot');
+console.log(skill.content);
+
+const docs = await skills.getDocumentation('IMPERATIVE-API');
+const agents = await skills.listAgents();
+```
+
+## No-code platforms
+
+Every snippet is the same call — the skill is just fetched and stored. The
+`?license=YOUR_KEY` parameter is mandatory.
+
+### Webflow
+
+**Site Settings → Custom Code → Head Code** (site-wide) or an **Embed** element
+(page-specific):
+
+```html
+<script>
+  fetch('https://skills.animotion.click/cdn/agentic/copilot?license=YOUR_KEY')
+    .then(r => r.text())
+    .then(skill => { window.animotionSkill = skill; });
+</script>
+```
+
+### Wix
+
+Velo **Code Panel** (or a Custom Element):
+
+```javascript
+import wixFetch from 'wix-fetch';
+
+$w.onReady(function () {
+  wixFetch.fetch('https://skills.animotion.click/cdn/agentic/opencode?license=YOUR_KEY')
+    .then(response => response.text())
+    .then(skill => { window.animotionSkill = skill; });
+});
+```
+
+### Squarespace
+
+**Settings → Advanced → Code Injection** (Header/Footer), or a Markdown block
+in code view:
+
+```html
+<script>
+  fetch('https://skills.animotion.click/cdn/agentic/copilot?license=YOUR_KEY')
+    .then(r => r.text())
+    .then(skill => { window.animotionSkill = skill; });
+</script>
+```
+
+### Framer
+
+Add a **Code Component**:
+
+```jsx
+import { useEffect, useState } from "react";
+
+export default function AnimotionSkill() {
+  const [skill, setSkill] = useState(null);
+
+  useEffect(() => {
+    fetch("https://skills.animotion.click/cdn/agentic/opencode?license=YOUR_KEY")
+      .then(r => r.text())
+      .then(setSkill);
+  }, []);
+
+  return <div style={{ display: "none" }}>{skill}</div>;
 }
 ```
 
-It is read before each section and written after: style tokens, layers used,
-sections built, order.
+### Shopify
+
+**Online Store → Themes → Edit Code → `theme.liquid`**, before `</head>` (or a
+custom Liquid section):
+
+```html
+<script>
+  fetch('https://skills.animotion.click/cdn/agentic/copilot?license=YOUR_KEY')
+    .then(r => r.text())
+    .then(skill => { window.animotionSkill = skill; });
+</script>
+```
+
+### WordPress
+
+`functions.php` hooked into `wp_head`, or a **Code Snippets** plugin:
+
+```php
+function load_animotion_skill() {
+    ?>
+    <script>
+    fetch('https://skills.animotion.click/cdn/agentic/copilot?license=YOUR_KEY')
+      .then(r => r.text())
+      .then(skill => { window.animotionSkill = skill; });
+    </script>
+    <?php
+}
+add_action('wp_head', 'load_animotion_skill');
+```
+
+### Notion
+
+A Callout block converted to **Code → HTML**, or `/embed` with the skill URL:
+
+```html
+<script>
+  fetch('https://skills.animotion.click/cdn/agentic/opencode?license=YOUR_KEY')
+    .then(r => r.text())
+    .then(skill => { window.animotionSkill = skill; });
+</script>
+```
+
+### Airtable
+
+**Scripting** extension:
+
+```javascript
+let response = await fetch('https://skills.animotion.click/cdn/agentic/copilot?license=YOUR_KEY');
+let skill = await response.text();
+output.text('Agentic skill loaded: ' + skill.substring(0, 200) + '...');
+```
+
+### Zapier / Make / n8n
+
+Webhook / HTTP Request, method `GET`:
+
+```
+https://skills.animotion.click/cdn/agentic/copilot?license=YOUR_KEY
+X-License-Key: YOUR_LICENSE_KEY
+```
+
+- **Zapier:** *Webhooks by Zapier → Catch Hook*, then *Code by Zapier → Run
+  JavaScript* with `return { skill: await (await fetch(url)).text() };`
+- **Make:** *HTTP → Make a request*, GET, the URL above
+- **n8n:** *HTTP Request* node, GET, the URL above
+
+## Agent install locations
+
+The installer writes these automatically (`--agent=<name>`); the paths are here
+for manual setup. The installed file is always downloaded from
+`/cdn/agentic/<agent>?license=YOUR_KEY`.
+
+| Agent | Directory | File |
+|-------|-----------|------|
+| GitHub Copilot | `~/.copilot/skills/animotion/` | `SKILL.md` |
+| Cursor | `~/.cursor/skills/rules/` | `animotion.mdc` |
+| Claude Code | `~/.claude/skills/animotion/` | `SKILL.md` |
+| OpenCode | `~/.opencode/skills/animotion/` | `SKILL.md` |
+| Windsurf (Codeium) | `~/.codeium/windsurf/skills/animotion/` | `skill.md` |
+| Cody (Sourcegraph) | `~/.cody/skills/animotion/` | `SKILL.md` |
+| Codium | `~/.codium/skills/animotion/` | `skill.md` |
+| Aider | `~/.aider/skills/` | `CONVENTIONS.md` (no YAML frontmatter) |
+| Continue | `~/.continue/skills/rules/` | `animotion.md` |
+
+Every directory also receives `animotion-validator.js` (license check),
+`animotion-config.json` (license key / admin credentials) and a `docs/` copy.
+Run `npx animotion-skills install --list` for the remaining agents
+(`amazonq`, `augment`, `cline`, `codex`, `jetbrains`, `roo`, …).
 
 ## Troubleshooting
 
 | Issue | Fix |
 |-------|-----|
 | `401` from `/cdn/agentic/...` or `/cdn/studio/...` | Both tier names need a **Studio** ($15/mo) key — Pro keys are rejected |
-| `401`/`403` on `/cdn/library/<kind>/<id>` | Premium layer — send `?license=` or `X-License-Key`; free layers need no key |
+| `401`/`403` on `/cdn/library/<kind>/<id>` | Optional content library — send `?license=` or `X-License-Key`; the skill itself never needs it |
+| `401` on any other skill endpoint | Send `X-License-Key` / `?license=`, admin credentials, or a bearer session token; also check the agent name is lowercase |
+| `403` on any endpoint | License expired or wrong plan — check the subscription at https://skills.animotion.click/checkout, or delete `animotion-config.json` and reinstall |
+| License validation fails | Internet required, key must match the active subscription; clear the cached `animotion-config.json` and reinstall |
 | Skill not found in agent | Re-run install with `--force`, confirm the agent name via `--list` |
 | Agent ignores the skill | Activate with `/animotion-agentic` at the start of your request |
-| Agent invents generic sections | It skipped Step 0 or materializing — re-activate and insist on the layer's spec |
+| Agent writes GSAP/CSS animations instead | Re-activate and insist on AnimotionJS only — the skill's non-negotiable |
+| Agent guesses a design it can't see | It skipped reading the source — point it at the link/video again, or say "match it exactly" |
 | Animations blocked on license | Pass the key: `Animotion.init({ licenseKey: 'YOUR_KEY' })` |
 | Plugin import fails | Core first, then `https://skills.animotion.click/cdn/plugins/<slug>` (`?license=` for pro plugins) |
+| npm install fails | Node.js 18+, `npm cache clean --force`, run as admin on Windows / `sudo` on macOS-Linux |
+| CORS errors on a no-code platform | Use the [JSONP](#jsonp-legacy-platforms) callback or the [script loader](#script-loader) instead of `fetch()` |
+
+## Support
+
+- **Docs:** https://animotion.click/docs
+- **Pricing / checkout:** https://skills.animotion.click/checkout
+- **Issues:** https://github.com/animotion/animotionjs/issues
+- **Email:** support@animotion.click
 
 ## See also
 
-- [Skills Guide](Skills-GUIDE.md) — all tiers, agents, endpoints, troubleshooting
 - [Imperative API](IMPERATIVE-API.md) / [Declarative Attributes](DECLARATIVE-ATTRIBUTES.md) — the underlying references
 - [Pricing](../README.md#pricing--stripe-checkout) — get a Studio key
