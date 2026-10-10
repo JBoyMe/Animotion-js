@@ -207,6 +207,8 @@ npx animotion-skills install --all --license-key=YOUR_KEY
 
 Options: `--tier <agentic|studio>`, `--license-key <key>`, `--admin-email <email>`, `--admin-secret <secret>`, `--agent <name>`, `--all`, `--force`, `--list`, `--detect`.
 
+The npm package contains **the installer only** — the skill file and the reference docs are downloaded from the CDN with your license key and cached in `~/.animotion-skills/cache/`, so no skill source is readable from the tarball.
+
 **Supported agents (15):** `aider`, `amazonq`, `augment`, `claude`, `cline`, `codex`, `codium`, `cody`, `continue`, `copilot`, `cursor`, `jetbrains`, `opencode`, `roo`, `windsurf`
 
 Tier deep-dive: **[Agentic guide](docs/AGENTIC-MODE.md)** — the `agentic` tier is the one full skill (`studio` is its deprecated alias). Both require the Studio plan.

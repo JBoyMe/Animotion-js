@@ -85,6 +85,13 @@ Useful flags: `--detect` (list detected agents), `--list` (all supported
 agents), `--agent <name>`, `--all`, `--force`, `--admin-email` /
 `--admin-secret`.
 
+The npm package ships **the installer only** — agent detection, the license
+validator and the CDN client (`bin/`, `lib/`, `index.js`). The skill text and
+the reference docs are downloaded with your key at install time
+(`GET /cdn/{tier}/{agent}`, `GET /cdn/docs/{doc}`) and cached in
+`~/.animotion-skills/cache/`, so no skill source is readable from the tarball
+and re-installs still work offline.
+
 CDN (raw skill text — requires `?license=` or `X-License-Key`):
 
 ```
