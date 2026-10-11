@@ -210,6 +210,10 @@ npx animotion-skills install --tier=studio --license-key=YOUR_KEY
 # Specific agent / everything detected
 npx animotion-skills install --agent=copilot --license-key=YOUR_KEY
 npx animotion-skills install --all --license-key=YOUR_KEY
+
+# Install with admin credentials instead of a key (whitelisted emails only)
+npx animotion-skills install --agent=opencode --admin-email=you@example.com --admin-secret=YOUR_ADMIN_SECRET
+npx animotion-skills install --all --admin-email=you@example.com --admin-secret=YOUR_ADMIN_SECRET
 ```
 
 Options: `--tier <agentic|studio>`, `--license-key <key>`, `--admin-email <email>`, `--admin-secret <secret>`, `--agent <name>`, `--all`, `--force`, `--list`, `--detect`.
@@ -228,6 +232,52 @@ A second skill ships alongside the Animotion recreate skill: **agentic-web-devel
 - **Fetch the skill:** `GET /api/skills/agentic-web-developer?licenseKey=KEY` (raw `SKILL.md`; add `?file=references/…` for its reference files, `?format=json` for a JSON wrapper). Auth: `?licenseKey=`, `Authorization: Bearer <session>`, or `X-Admin-Email` + `X-Admin-Secret`.
 - **Runtime validation (what the skill's license gate calls):** `POST /api/license/validate` with `{ "licenseKey": "KEY", "skill": "agentic-web-developer", "plan": "pro" }` (or the admin-credential variant). `valid: true` unlocks; verdicts are cached 7 days client-side.
 - **Publishing updates:** run `scripts/sync-agentic-web-developer.ps1` (also part of `scripts/deploy-backend.ps1`) to push the local skill directory into the backend before deploy.
+
+#### Install the skill (with a license key or admin credentials)
+
+The skill ships as files over the API (there is no npm package for it). Download the whole pack — `SKILL.md`, `references/`, `templates/` — into your agent's skills directory with a Pro key (Node 18+; opencode path shown):
+
+```bash
+# bash / zsh — install with a Pro license key
+KEY="sec_live_xxxxxxxx" \
+DEST="$HOME/.config/opencode/skills/agentic-web-developer" \
+node -e '
+  const fs = require("fs"), path = require("path");
+  (async () => {
+    const url = "https://skills.animotion.click/api/skills?skill=agentic-web-developer&licenseKey=" + process.env.KEY;
+    const j = await (await fetch(url)).json();
+    if (!j.success) throw new Error("Download failed — check the key");
+    for (const f of j.skills) {
+      const p = path.join(process.env.DEST, f.name);
+      fs.mkdirSync(path.dirname(p), { recursive: true });
+      fs.writeFileSync(p, f.content);
+    }
+    console.log("Installed " + j.count + " files -> " + process.env.DEST);
+  })();
+'
+```
+
+```powershell
+# PowerShell — install with a Pro license key
+$env:KEY = "sec_live_xxxxxxxx"
+$env:DEST = "$env:USERPROFILE\.config\opencode\skills\agentic-web-developer"
+node -e 'const fs=require("fs"),path=require("path");(async()=>{const j=await (await fetch("https://skills.animotion.click/api/skills?skill=agentic-web-developer&licenseKey="+process.env.KEY)).json();if(!j.success)throw new Error("Download failed - check the key");for(const f of j.skills){const p=path.join(process.env.DEST,f.name);fs.mkdirSync(path.dirname(p),{recursive:true});fs.writeFileSync(p,f.content);}console.log("Installed "+j.count+" files -> "+process.env.DEST);})()'
+```
+
+**Install with admin credentials instead of a key** (whitelisted emails only) — same scripts, swap the URL query string:
+
+```
+.../api/skills?skill=agentic-web-developer&adminEmail=you@example.com&adminSecret=YOUR_ADMIN_SECRET
+```
+
+```bash
+# bash variant: replace the KEY= line above with
+ADMIN_EMAIL="you@example.com" ADMIN_SECRET="YOUR_ADMIN_SECRET" \
+DEST="$HOME/.config/opencode/skills/agentic-web-developer" \
+node -e '…same script, url = ".../api/skills?skill=agentic-web-developer&adminEmail=" + process.env.ADMIN_EMAIL + "&adminSecret=" + process.env.ADMIN_SECRET'
+```
+
+Other agents: change `DEST` (e.g. `~/.config/claude/skills/…` for Claude Code, `~/.config/github-copilot/skills/…` for Copilot). Restart the agent afterwards so the skill loads. The first time it runs, the skill's license gate validates the same key/admin pair once per session (7-day cache) — that's covered in the next subsection.
 
 #### Add your license key or admin credentials
 
@@ -385,6 +435,17 @@ Payments run through Stripe's hosted checkout — the same flow as the Animotion
 | **Studio** | $15 / month | Everything in Pro + the Agentic skill (recreate pasted prompts, website links and videos; `studio` included as an alias) | [![Get Studio — $15/mo](https://img.shields.io/badge/Get_Studio-%2415%2Fmonth-222222)](https://skills.animotion.click/checkout?plan=studio) |
 
 The checkout page collects your email, redirects to Stripe, and shows your license key as soon as the payment is confirmed.
+
+#### How to pay for Pro
+
+1. **Click a Get Pro button** — at the top of this README, in the pricing table above, or in the [agentic-web-developer section](#agentic-web-developer-skill-pro-plan). It opens [`skills.animotion.click/checkout?plan=pro`](https://skills.animotion.click/checkout?plan=pro) with the **Pro** plan preselected ($7/month).
+2. **Enter your email** on the checkout page — this is the address your license is tied to.
+3. **Continue to Payment** — you are redirected to Stripe's hosted checkout (card payment; Stripe handles the card, nothing touches this repo's servers).
+4. **Confirm the subscription** — $7/month, renews monthly, cancel anytime from your Stripe invoice email or the confirmation page.
+5. **Copy your license key** — the confirmation page immediately shows the key (`sec_live_…`). It is also re-sendable to the same email.
+6. **Use the key** — install the [Animotion skill with `--license-key`](#install-with-the-cli-recommended), [install agentic-web-developer](#install-the-skill-with-a-license-key-or-admin-credentials), or set `AGENTIC_LICENSE_KEY` so both pick it up automatically.
+
+> **Admin credentials are not self-serve.** `--admin-email`/`--admin-secret` (and `AGENTIC_ADMIN_EMAIL`/`AGENTIC_ADMIN_SECRET`) are a staff bypass for whitelisted emails — everyone else pays with a Pro key from the flow above.
 
 ## Framework Integration
 
