@@ -2,6 +2,8 @@
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 [![npm version](https://img.shields.io/npm/v/animotionjs-plus)](https://www.npmjs.com/package/animotionjs-plus)
+[![Get Pro — $7/mo](https://img.shields.io/badge/Get_Pro-%247%2Fmonth-38ED26)](https://skills.animotion.click/checkout?plan=pro)
+[![Get Studio — $15/mo](https://img.shields.io/badge/Get_Studio-%2415%2Fmonth-222222)](https://skills.animotion.click/checkout?plan=studio)
 
 Advanced custom web animation engine — scroll, text, 3D, media, and layout animations for Vanilla JS, React, and Next.js.
 
@@ -10,7 +12,7 @@ Animotion gives you a complete animation toolkit with a unified API. Features in
 Two usage tiers:
 
 - **Free** — the full imperative JavaScript API (`Animotion.to()`, timelines, scroll, springs, …)
-- **Pro ($7/mo)** — everything free, plus declarative `am-*` HTML attributes with zero JavaScript, and Pro plugins
+- **Pro ($7/mo)** — everything free, plus declarative `am-*` HTML attributes with zero JavaScript, Pro plugins, and the **agentic-web-developer** skill (the end-to-end website-building pipeline for AI agents — design DNA extraction, conversion blueprints, lead-gen/sell, product launches, Mode C advanced 3D/WebGL)
 - **Studio ($15/mo)** — everything in Pro, plus the **Agentic skill** for AI coding agents (paste a prompt from getlayers.ai/motionsites.ai, drop a website link or a video, and the agent rebuilds it strictly with AnimotionJS — the legacy `studio` tier is an alias of it)
 
 > **Note:** This repository publishes documentation and license information only. The engine source code is distributed through the [npm package](https://www.npmjs.com/package/animotionjs-plus).
@@ -23,6 +25,7 @@ Two usage tiers:
 - [Declarative Initialization](#declarative-initialization)
 - [License Key (Pro / Studio)](#license-key-pro--studio)
 - [AI Agent Skills (Agentic)](#ai-agent-skills-agentic)
+  - [agentic-web-developer skill (Pro plan)](#agentic-web-developer-skill-pro-plan)
 - [Plugins (Free & Pro)](#plugins-free--pro)
 - [Pricing & Stripe Checkout](#pricing--stripe-checkout)
 - [Framework Integration](#framework-integration)
@@ -177,6 +180,10 @@ X-License-Key: sec_live_xxxxxxxx          (HTTP header alternative)
 npx animotion-skills install --agent=cursor --tier=agentic --license-key=sec_live_xxxxxxxx
 ```
 
+**4. The agentic-web-developer website skill**
+
+The skill's license gate picks the key up from the `AGENTIC_LICENSE_KEY` environment variable, an `animotion-config.json` (the same file the installer writes), or admin credentials — full recipes: [agentic-web-developer skill](#agentic-web-developer-skill-pro-plan).
+
 Your license key is displayed on the confirmation page as soon as the payment completes.
 
 ## AI Agent Skills (Agentic)
@@ -212,6 +219,60 @@ The npm package contains **the installer only** — the skill file and the refer
 **Supported agents (15):** `aider`, `amazonq`, `augment`, `claude`, `cline`, `codex`, `codium`, `cody`, `continue`, `copilot`, `cursor`, `jetbrains`, `opencode`, `roo`, `windsurf`
 
 Tier deep-dive: **[Agentic guide](docs/AGENTIC-MODE.md)** — the `agentic` tier is the one full skill (`studio` is its deprecated alias). Both require the Studio plan.
+
+### agentic-web-developer skill (Pro plan)
+
+A second skill ships alongside the Animotion recreate skill: **agentic-web-developer**, an opencode skill that runs an end-to-end website-building pipeline (design DNA extraction from an inspiration pack, outlier competitor research, conversion blueprint, M.O.N.E.Y selling framework, product launches, and a Mode C advanced 3D/WebGL workflow with Three.js + AnimotionJS). Animation work inside it always hands off to the AnimotionJS agentic skill.
+
+- **Plan:** Pro ($7/month) — the same license key that unlocks declarative attributes and Pro plugins. Admin credentials (whitelisted) work too.
+- **Fetch the skill:** `GET /api/skills/agentic-web-developer?licenseKey=KEY` (raw `SKILL.md`; add `?file=references/…` for its reference files, `?format=json` for a JSON wrapper). Auth: `?licenseKey=`, `Authorization: Bearer <session>`, or `X-Admin-Email` + `X-Admin-Secret`.
+- **Runtime validation (what the skill's license gate calls):** `POST /api/license/validate` with `{ "licenseKey": "KEY", "skill": "agentic-web-developer", "plan": "pro" }` (or the admin-credential variant). `valid: true` unlocks; verdicts are cached 7 days client-side.
+- **Publishing updates:** run `scripts/sync-agentic-web-developer.ps1` (also part of `scripts/deploy-backend.ps1`) to push the local skill directory into the backend before deploy.
+
+#### Add your license key or admin credentials
+
+Get a key first — **Pro unlocks this skill** (Studio also unlocks the AnimotionJS agentic animation skill the pipeline hands off to at Stage 8, so bundling is usually the better deal):
+
+[![Get Pro — $7/mo](https://img.shields.io/badge/Get_Pro-%247%2Fmonth-38ED26)](https://skills.animotion.click/checkout?plan=pro) [![Get Studio — $15/mo](https://img.shields.io/badge/Get_Studio-%2415%2Fmonth-222222)](https://skills.animotion.click/checkout?plan=studio)
+
+Checkout shows the key (`sec_live_…`) on the confirmation page. Then give it to the skill in one of these ways — the gate checks them in this order:
+
+**1. Environment variable (recommended)**
+
+```bash
+# bash / zsh — add to ~/.bashrc or ~/.zshrc
+export AGENTIC_LICENSE_KEY="sec_live_xxxxxxxx"
+```
+
+```powershell
+# PowerShell — persistent for your user (open a new terminal afterwards)
+setx AGENTIC_LICENSE_KEY "sec_live_xxxxxxxx"
+```
+
+`ANIMOTION_LICENSE_KEY` works as an alias, so one variable can serve this skill and the Animotion installer.
+
+**2. `animotion-config.json` (shared with the Animotion skill installer)**
+
+If you installed the AnimotionJS skill with `--license-key=…`, the key is already on disk: the installer writes `animotion-config.json` next to the installed skill, and the gate reads it from the agentic-web-developer skill directory, its parent (`~/.config/opencode/skills/` for opencode), `~/.animotion-skills/`, or the path in `AGENTIC_LICENSE_CONFIG`. To create one yourself:
+
+```json
+{
+  "tier": "pro",
+  "requiredPlan": "pro",
+  "authMethod": "license",
+  "licenseKey": "sec_live_xxxxxxxx"
+}
+```
+
+**3. Admin credentials (Animotion staff / whitelisted emails only)**
+
+Same pair the license backend uses — provide via env vars `AGENTIC_ADMIN_EMAIL` + `AGENTIC_ADMIN_SECRET`, or a config file with `"authMethod": "admin"` and `adminEmail` / `adminSecret` fields (installer-written files store the secret encrypted; the gate decrypts those automatically). Never commit these — prefer a personal Pro key for day-to-day work.
+
+**4. Ask in-session**
+
+With nothing found, the skill asks once (via its question tool) — paste the key and it validates immediately.
+
+**Runtime behavior:** one validation per session at most (`POST /api/license/validate`), the verdict cached for **7 days** at `~/.animotion-skills/cache/agentic-web-developer-verdict.json`; offline sessions reuse a fresh cache. Point the gate at a local dev server with `AGENTIC_LICENSE_SERVER=http://localhost:5000`. Troubleshooting (invalid key, wrong plan, not whitelisted, expired cache) ships with the skill as `references/licensing.md`.
 
 ### CDN endpoints
 
@@ -320,8 +381,8 @@ Payments run through Stripe's hosted checkout — the same flow as the Animotion
 
 | Plan | Price | Unlocks | Get a key |
 |------|-------|---------|-----------|
-| **Pro** | $7 / month | Declarative `am-*` attributes, Pro plugins | [**Get Pro key**](https://skills.animotion.click/checkout?plan=pro) |
-| **Studio** | $15 / month | Everything in Pro + the Agentic skill (recreate pasted prompts, website links and videos; `studio` included as an alias) | [**Get Studio key**](https://skills.animotion.click/checkout?plan=studio) |
+| **Pro** | $7 / month | Declarative `am-*` attributes, Pro plugins, the **agentic-web-developer** website-building skill | [![Get Pro — $7/mo](https://img.shields.io/badge/Get_Pro-%247%2Fmonth-38ED26)](https://skills.animotion.click/checkout?plan=pro) |
+| **Studio** | $15 / month | Everything in Pro + the Agentic skill (recreate pasted prompts, website links and videos; `studio` included as an alias) | [![Get Studio — $15/mo](https://img.shields.io/badge/Get_Studio-%2415%2Fmonth-222222)](https://skills.animotion.click/checkout?plan=studio) |
 
 The checkout page collects your email, redirects to Stripe, and shows your license key as soon as the payment is confirmed.
 
